@@ -279,6 +279,11 @@ textarea { width: 100%; min-height: 132px; resize: vertical; border: 1px solid v
 .center { text-align: center; }
 
 .chart-card { border-radius: 28px; padding: 22px 18px 17px; color: #fff; background: linear-gradient(150deg, #58517f, #7e719b); box-shadow: 0 20px 52px rgba(80,69,116,.22); }
+.climate-title-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; }
+.climate-title-row .prompt { margin-bottom: 14px; }
+.period-switch { flex: 0 0 auto; display: flex; gap: 4px; padding: 4px; border: 1px solid var(--line); border-radius: 14px; background: rgba(255,255,255,.54); }
+.period-switch button { min-height: 35px; padding: 7px 10px; border: 0; border-radius: 10px; color: var(--muted); background: transparent; cursor: pointer; font-size: 11px; white-space: nowrap; }
+.period-switch button.selected { color: var(--purple-dark); background: rgba(217,211,237,.72); font-weight: 750; }
 .chart-head { display: flex; justify-content: space-between; align-items: start; gap: 10px; }
 .chart-badge { border-radius: 999px; padding: 7px 10px; background: rgba(255,255,255,.13); font-size: 11px; color: rgba(255,255,255,.78); }
 .chart { height: 170px; width: 100%; margin-top: 10px; overflow: visible; }
@@ -287,6 +292,29 @@ textarea { width: 100%; min-height: 132px; resize: vertical; border: 1px solid v
 .chart .line { fill: none; stroke: #f7d4bb; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
 .chart .point { fill: #fff; stroke: #776a96; stroke-width: 3; }
 .chart text { fill: rgba(255,255,255,.58); font-size: 10px; }
+.report-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; margin-top: 10px; }
+.report-stats article { min-width: 0; padding: 13px 5px; border: 1px solid var(--line); border-radius: 17px; background: rgba(255,255,255,.58); text-align: center; }
+.report-stats span { display: block; color: var(--muted); font-size: 10px; white-space: nowrap; }
+.report-stats strong { display: block; margin-top: 4px; color: var(--purple-dark); font-size: 19px; }
+.evidence-card, .signal-card, .care-observation { border: 1px solid var(--line); border-radius: 22px; background: rgba(255,255,255,.62); box-shadow: var(--shadow); }
+.evidence-card { padding: 19px; }
+.evidence-card p { margin: 6px 0 0; color: var(--muted); font-size: 12px; }
+.evidence-progress { height: 6px; margin-bottom: 14px; overflow: hidden; border-radius: 99px; background: rgba(39,36,31,.07); }
+.evidence-progress span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--purple), #b88fa8); }
+.signal-card { margin-top: 10px; padding: 18px; }
+.signal-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 15px; }
+.signal-head h3 { margin-top: 3px; }
+.signal-head > strong { color: var(--purple-dark); font-size: 23px; }
+.signal-row { display: grid; grid-template-columns: 46px 1fr 34px; gap: 9px; align-items: center; margin-top: 9px; font-size: 11px; }
+.signal-row > span { color: var(--muted); }
+.signal-row > div { height: 7px; overflow: hidden; border-radius: 99px; background: rgba(39,36,31,.07); }
+.signal-row i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #9185b8, #d4a58d); }
+.signal-row > strong { text-align: right; font-size: 11px; }
+.care-observation { margin-top: 12px; padding: 18px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.care-observation h3 { margin-top: 4px; }
+.care-observation p { margin: 5px 0 0; color: var(--muted); font-size: 12px; line-height: 1.55; }
+.care-observation .soft-button { flex: 0 0 auto; min-height: 44px; padding: 10px 14px; }
+.climate-empty { margin-top: 8px; }
 .history-list { display: grid; gap: 10px; }
 .history-card { width: 100%; padding: 16px; border-radius: 20px; display: grid; grid-template-columns: 45px 1fr auto; gap: 12px; align-items: center; color: var(--ink); text-align: left; cursor: pointer; }
 .history-weather { width: 45px; height: 45px; display: grid; place-items: center; border-radius: 15px; background: rgba(217,211,237,.48); font-size: 21px; }
@@ -409,6 +437,11 @@ body:has(textarea:focus) .bottom-nav {
   .empty-card .soft-button { width: 100%; }
   .journey-strip { grid-template-columns: repeat(2, 1fr); row-gap: 10px; }
   .journey-step:nth-child(3) { border-left: 0; }
+  .climate-title-row { display: block; }
+  .period-switch { width: max-content; margin: 0 0 14px; }
+  .report-stats { grid-template-columns: repeat(2, 1fr); }
+  .care-observation { align-items: flex-start; flex-direction: column; }
+  .care-observation .soft-button { width: 100%; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -533,6 +566,13 @@ function chooseExercise({ trigger, minutes, place, energy }) {
     return { type: 'plan', title: '三分钟最小行动', duration: 0, reason: '把无法掌控的担心，缩小成一个现在能完成的动作。' };
   }
   return { type: 'ground', title: '感官落地练习', duration: 0, reason: '把注意力从反复的念头，温和地带回此刻。' };
+}
+
+function resolveCareOutcome({ intensity, exerciseType, completed }) {
+  const before = Number.isInteger(intensity) ? Math.min(10, Math.max(1, intensity)) : 5;
+  const actionable = new Set(['breathe', 'ground', 'plan']);
+  if (!completed || !actionable.has(exerciseType)) return { after: before, careType: 'skipped' };
+  return { after: Math.max(1, before - 2), careType: exerciseType };
 }
 
 function readEntries(storage) {
@@ -747,6 +787,96 @@ function computeUsageStats(entries = [], now = new Date()) {
   return { total: personal.length, thisWeek, streak };
 }
 
+const moodOrder = ['开心', '平静', '疲惫', '焦虑', '低落', '生气'];
+const triggerOrder = ['学业', '工作', '人际', '家庭', '感情', '身体', '经济', '不知道'];
+const careOrder = ['breathe', 'ground', 'plan'];
+
+function reconcileEntrySources(userEntries = [], sessionEntries = []) {
+  const userIds = new Set(userEntries.map(item => item?.id).filter(Boolean));
+  return {
+    userEntries: [...userEntries],
+    sessionEntries: sessionEntries.filter(item => item?.id && !userIds.has(item.id))
+  };
+}
+
+function roundOne(value) {
+  return Math.round((value + Number.EPSILON) * 10) / 10;
+}
+
+function rankedBreakdown(entries, key, order) {
+  const counts = new Map();
+  entries.forEach(item => counts.set(item[key], (counts.get(item[key]) || 0) + 1));
+  return [...counts]
+    .map(([name, count]) => ({ name, count, share: Math.round((count / entries.length) * 100) }))
+    .sort((a, b) => b.count - a.count || order.indexOf(a.name) - order.indexOf(b.name));
+}
+
+function buildPeriodReport(entries = [], { days = 7, now = new Date() } = {}) {
+  const safeDays = days === 30 ? 30 : 7;
+  const current = new Date(now);
+  const safeNow = Number.isFinite(current.getTime()) ? current : new Date();
+  const start = new Date(safeNow.getFullYear(), safeNow.getMonth(), safeNow.getDate());
+  start.setDate(start.getDate() - (safeDays - 1));
+
+  const byId = new Map();
+  for (const item of entries) {
+    if (item?.source !== 'user' && item?.source !== 'session') continue;
+    if (isReservedSample(item)) continue;
+    const normalized = normalizeEntry(item);
+    if (!normalized || !Number.isInteger(item.before) || !Number.isInteger(item.after)) continue;
+    const candidate = { ...normalized, source: item.source };
+    const existing = byId.get(candidate.id);
+    if (!existing || (existing.source === 'session' && candidate.source === 'user')) byId.set(candidate.id, candidate);
+  }
+  const periodEntries = sortNewestFirst([...byId.values()].filter(item => {
+    const createdAt = new Date(item.createdAt);
+    return createdAt >= start && createdAt <= safeNow;
+  }));
+  const count = periodEntries.length;
+  const activeDays = new Set(periodEntries.map(item => localDayKey(new Date(item.createdAt)))).size;
+  const patternReady = count >= 3 && activeDays >= 2;
+  const averageBefore = count ? roundOne(periodEntries.reduce((sum, item) => sum + item.before, 0) / count) : null;
+  const averageAfter = count ? roundOne(periodEntries.reduce((sum, item) => sum + item.after, 0) / count) : null;
+  const averageChange = count ? roundOne(averageBefore - averageAfter) : null;
+  const moodBreakdown = count ? rankedBreakdown(periodEntries, 'mood', moodOrder) : [];
+  const triggerBreakdown = count ? rankedBreakdown(periodEntries, 'trigger', triggerOrder) : [];
+
+  let effectiveCare = null;
+  if (patternReady) {
+    const careStats = new Map(careOrder.map(type => [type, { type, count: 0, totalChange: 0, days: new Set() }]));
+    periodEntries.forEach(item => {
+      const stat = careStats.get(item.careType);
+      if (!stat) return;
+      stat.count += 1;
+      stat.totalChange += item.before - item.after;
+      stat.days.add(localDayKey(new Date(item.createdAt)));
+    });
+    effectiveCare = [...careStats.values()]
+      .filter(stat => stat.count >= 2 && stat.days.size >= 2 && stat.totalChange / stat.count > 0)
+      .map(stat => ({ type: stat.type, count: stat.count, averageChange: roundOne(stat.totalChange / stat.count) }))
+      .sort((a, b) => b.averageChange - a.averageChange || b.count - a.count || careOrder.indexOf(a.type) - careOrder.indexOf(b.type))[0] || null;
+  }
+
+  return {
+    days: safeDays,
+    entries: periodEntries,
+    count,
+    sessionCount: periodEntries.filter(item => item.source === 'session').length,
+    activeDays,
+    patternReady,
+    missingEntries: Math.max(0, 3 - count),
+    missingDays: Math.max(0, 2 - activeDays),
+    averageBefore,
+    averageAfter,
+    averageChange,
+    dominantMood: patternReady ? (moodBreakdown[0] || null) : null,
+    topTrigger: patternReady ? (triggerBreakdown[0] || null) : null,
+    moodBreakdown: patternReady ? moodBreakdown : [],
+    triggerBreakdown: patternReady ? triggerBreakdown : [],
+    effectiveCare
+  };
+}
+
 function saveEntryIdempotently(storage, entry) {
   const safeEntry = normalizeEntry(entry);
   if (!safeEntry) return { status: 'invalid', entries: [] };
@@ -862,6 +992,7 @@ let activeEntry = null;
 let detailReturnView = 'climate';
 let historyMood = '全部';
 let historyQuery = '';
+let climateDays = 7;
 let suspendedDiaryDraft = null;
 let resumableDiaryView = null;
 let draft = freshDraft();
@@ -878,6 +1009,7 @@ function freshDraft() {
     place: '独处',
     energy: '中',
     exercise: null,
+    careType: 'skipped',
     after: 4,
     exerciseOrigin: 'diary',
     saved: false
@@ -1071,6 +1203,7 @@ function renderTools() {
   const tools = [
     ['breathe', '◌', '1 分钟', '柔和呼吸', '跟随圆圈放慢呼吸，让身体先松一点。'],
     ['ground', '◎', '2 分钟', '感官落地', '用视觉、触觉和声音，把注意力带回此刻。'],
+    ['plan', '↗', '3 分钟', '最小行动', '把一整团担心，缩成现在可以完成的一小步。'],
     ['move', '↗', '3 分钟', '轻柔活动', '松开肩颈和手臂，适合久坐与疲惫时。']
   ];
   return `<section class="screen"><p class="eyebrow">CARE TOOLBOX</p><h1>现在就能做的小事</h1><p class="prompt">不需要先写日记。选一个此刻最容易开始的练习。</p>
@@ -1086,12 +1219,12 @@ function renderExercise() {
   if (ex.type === 'breathe') {
     body = `<div class="breath-stage"><div class="breath-circle"><div><strong id="breath-time">${ex.duration}</strong><span id="breath-cue">秒 · 准备好后开始</span></div></div></div><button class="primary light full" data-breathe-start>开始柔和呼吸</button>`;
   } else if (ex.type === 'ground') {
-    body = `<div class="exercise-list">${['看见一种柔和的颜色', '感受双脚与地面的接触', '听见一个近处的声音', '慢慢呼出一口气'].map((text, index) => `<label class="exercise-step"><input type="checkbox" data-ex-step><span>${index + 1}. ${text}</span></label>`).join('')}</div><button class="primary light full" data-ex-complete>我回到此刻了</button>`;
+    body = `<div class="exercise-list">${['看见一种柔和的颜色', '感受双脚与地面的接触', '听见一个近处的声音', '慢慢呼出一口气'].map((text, index) => `<label class="exercise-step"><input type="checkbox" data-ex-step><span>${index + 1}. ${text}</span></label>`).join('')}</div><button class="primary light full" data-ex-complete disabled>完成全部步骤后继续</button>`;
   } else if (ex.type === 'move') {
-    body = `<div class="exercise-list">${['双肩慢慢向后绕 3 圈', '手臂向上伸展，保持一次呼吸', '轻轻转动颈部，回到正中', '站起来或活动双脚 20 秒'].map((text, index) => `<label class="exercise-step"><input type="checkbox" data-ex-step><span>${index + 1}. ${text}</span></label>`).join('')}</div><button class="primary light full" data-ex-complete>身体松开一点了</button>`;
+    body = `<div class="exercise-list">${['双肩慢慢向后绕 3 圈', '手臂向上伸展，保持一次呼吸', '轻轻转动颈部，回到正中', '站起来或活动双脚 20 秒'].map((text, index) => `<label class="exercise-step"><input type="checkbox" data-ex-step><span>${index + 1}. ${text}</span></label>`).join('')}</div><button class="primary light full" data-ex-complete disabled>完成全部步骤后继续</button>`;
   } else {
     const action = draft.trigger === '学业' ? '写下最可能被问到的一个问题' : draft.trigger === '经济' ? '列出一个今天能确认的数字或信息' : '写下下一步最小、最具体的动作';
-    body = `<div class="exercise-list"><label class="exercise-step"><input type="checkbox" data-ex-step><span>1. ${action}</span></label><label class="exercise-step"><input type="checkbox" data-ex-step><span>2. 只做它，不处理整件事</span></label><label class="exercise-step"><input type="checkbox" data-ex-step><span>3. 做完后允许自己停下来</span></label></div><button class="primary light full" data-ex-complete>这个动作已经足够小</button>`;
+    body = `<div class="exercise-list"><label class="exercise-step"><input type="checkbox" data-ex-step><span>1. ${action}</span></label><label class="exercise-step"><input type="checkbox" data-ex-step><span>2. 只做它，不处理整件事</span></label><label class="exercise-step"><input type="checkbox" data-ex-step><span>3. 做完后允许自己停下来</span></label></div><button class="primary light full" data-ex-complete disabled>完成全部步骤后继续</button>`;
   }
   return `<section class="screen"><article class="exercise-hero"><p class="eyebrow">${draft.exerciseOrigin === 'toolbox' ? '自助练习' : '为此刻推荐'}</p><h2>${ex.title}</h2><p>${ex.reason}</p>${body}</article><button class="text-button full" style="margin-top:18px" data-skip>${draft.exerciseOrigin === 'toolbox' ? '返回工具箱' : '暂时不做，直接记录变化'}</button></section>`;
 }
@@ -1105,35 +1238,44 @@ function renderResult() {
 }
 
 function renderClimate() {
-  const entries = allEntries().slice(0, 7).reverse();
   const recordedEntries = [...userEntries, ...sessionEntries];
-  const hasPersonalData = userEntries.length > 0;
-  const hasSessionData = sessionEntries.length > 0;
-  const hasRecordedData = recordedEntries.length > 0;
-  const summary = summarizeEntries(hasRecordedData ? recordedEntries : sampleEntries);
-  const points = chartPoints(entries);
-  const climateTitle = hasPersonalData ? '你的内心气候' : hasSessionData ? '本次情绪气候' : '一份示例气候';
-  const climatePrompt = hasPersonalData ? '规律不是结论，只是值得继续观察的线索。' : hasSessionData ? '这次结果仅在当前页面有效，浏览器未能保存它。' : '先看看记录如何变成线索；完成一次记录后，这里才会生成你的观察。';
-  const climateBadge = hasPersonalData ? '我的 + 示例' : hasSessionData ? '本次未保存 + 示例' : '仅为示例';
-  const isExample = !hasRecordedData;
-  const firstSignalLabel = isExample ? '示例高频触发' : summary.patternReady ? '高频触发' : '规律进度';
-  const firstSignalValue = isExample || summary.patternReady ? summary.topTrigger : `还需 ${Math.max(0, 3 - summary.evidenceCount)} 次记录`;
-  const careSignalLabel = isExample ? '示例有效方式' : summary.patternReady ? '可能更有效' : '调节方式';
-  const careSignalValue = isExample || summary.patternReady ? (careNames[summary.bestCare] || '继续观察') : '继续观察';
-  return `<section class="screen"><p class="eyebrow">INNER CLIMATE</p><h1>${climateTitle}</h1><p class="prompt">${climatePrompt}</p>
-    <article class="chart-card"><div class="chart-head"><div><small style="color:rgba(255,255,255,.65)">${hasRecordedData ? '最近 7 次记录' : '5 条体验记录'}</small><h2 style="margin-top:4px">情绪强度变化</h2></div><span class="chart-badge">${climateBadge}</span></div>
-      <svg class="chart" viewBox="0 0 330 170" role="img" aria-label="最近七次情绪强度趋势图"><defs><linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f5cdb1" stop-opacity=".38"/><stop offset="1" stop-color="#f5cdb1" stop-opacity="0"/></linearGradient></defs><line class="grid" x1="16" x2="314" y1="45" y2="45"/><line class="grid" x1="16" x2="314" y1="90" y2="90"/><line class="grid" x1="16" x2="314" y1="135" y2="135"/><path class="area" d="${points.area}"/><path class="line" d="${points.line}"/>${points.circles}${points.labels}</svg>
+  const report = buildPeriodReport(recordedEntries, { days: climateDays });
+  const periodLabel = `近 ${report.days} 天`;
+  const periodSwitch = `<div class="period-switch" role="group" aria-label="复盘周期"><button data-climate-days="7" class="${report.days === 7 ? 'selected' : ''}" aria-pressed="${report.days === 7}">近 7 天</button><button data-climate-days="30" class="${report.days === 30 ? 'selected' : ''}" aria-pressed="${report.days === 30}">近 30 天</button></div>`;
+  if (!report.count) {
+    const hasOlderRecords = recordedEntries.length > 0;
+    return `<section class="screen"><p class="eyebrow">INNER CLIMATE</p><div class="climate-title-row"><div><h1>情绪复盘</h1><p class="prompt">只根据真实记录，看看最近发生了什么。</p></div>${periodSwitch}</div>
+      <article class="empty-state climate-empty"><span>◌</span><strong>${hasOlderRecords ? `${periodLabel}还没有记录` : '完成第一次记录后生成复盘'}</strong><p>${hasOlderRecords ? '这不是空白，只是这段时间没有留下观察。' : '记录情绪、触发因素和调节前后变化，心屿才会开始形成线索。'}</p><button class="soft-button" data-start>记录此刻</button></article>
+      ${!hasOlderRecords ? '<div class="disclaimer">心屿不会把体验示例混进你的周期数据。你的复盘只来自真实记录。</div>' : ''}
+    </section>`;
+  }
+  const chartEntries = report.entries.slice(0, 10).reverse();
+  const points = chartPoints(chartEntries);
+  const evidenceCopy = report.patternReady
+    ? `基于 ${report.count} 条记录、${report.activeDays} 个不同日期形成，仅作为继续观察的线索。`
+    : `再积累${report.missingEntries ? ` ${report.missingEntries} 条记录` : ''}${report.missingEntries && report.missingDays ? '，并' : ''}${report.missingDays ? `覆盖 ${report.missingDays} 个不同日期` : ''}，再开始看规律。`;
+  const actionType = report.effectiveCare?.type;
+  const actionTitle = actionType ? careNames[actionType] : '从一个小动作开始';
+  const actionCopy = actionType
+    ? `这段记录中尝试过 ${report.effectiveCare.count} 次，平均强度下降 ${report.effectiveCare.averageChange} 格。它不是结论，但值得下次继续观察。`
+    : report.patternReady ? '目前还没有一种方式在不同日期被重复验证。可以按此刻状态重新选择。' : '样本还少，先选一个最容易开始的动作，不急着寻找“最有效”。';
+  return `<section class="screen"><p class="eyebrow">INNER CLIMATE</p><div class="climate-title-row"><div><h1>${periodLabel}复盘</h1><p class="prompt">规律不是结论，只是值得继续观察的线索。</p></div>${periodSwitch}</div>
+    <article class="chart-card"><div class="chart-head"><div><small style="color:rgba(255,255,255,.65)">${report.count} 条真实记录 · ${report.activeDays} 个活跃日</small><h2 style="margin-top:4px">记录后情绪强度</h2></div><span class="chart-badge">${report.sessionCount ? `含 ${report.sessionCount} 条未保存` : '仅本机'}</span></div>
+      <svg class="chart" viewBox="0 0 330 170" role="img" aria-label="${periodLabel}记录后的情绪强度趋势图"><defs><linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f5cdb1" stop-opacity=".38"/><stop offset="1" stop-color="#f5cdb1" stop-opacity="0"/></linearGradient></defs><line class="grid" x1="16" x2="314" y1="45" y2="45"/><line class="grid" x1="16" x2="314" y1="90" y2="90"/><line class="grid" x1="16" x2="314" y1="135" y2="135"/><path class="area" d="${points.area}"/><path class="line" d="${points.line}"/>${points.circles}${points.labels}</svg>
     </article>
-    <div class="section-head"><h3>${isExample ? '示例如何形成观察' : summary.patternReady ? '正在浮现的线索' : '正在积累线索'}</h3></div>
-    <div class="mini-grid"><article class="mini-card"><span>${firstSignalLabel}</span><strong>${firstSignalValue}</strong></article><article class="mini-card"><span>${careSignalLabel}</span><strong>${careSignalValue}</strong></article></div>
-    <div class="section-head"><h3>最近记录</h3>${hasRecordedData ? '<button class="text-button" data-go="history">查看全部</button>' : '<span class="small muted">体验示例</span>'}</div>
-    <div class="history-list">${(hasRecordedData ? [...recordedEntries].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) : sampleEntries).slice(0, 4).map(renderHistoryCard).join('')}</div>
-    ${!hasRecordedData ? '<div class="disclaimer">目前展示的是体验用示例气候。完成一次记录后，你的数据会以“我的”标识出现。</div>' : hasSessionData ? '<div class="disclaimer">带“未保存”标识的记录只在当前页面有效，刷新或关闭页面后会消失。</div>' : ''}
+    <div class="report-stats"><article><span>记录次数</span><strong>${report.count}</strong></article><article><span>活跃天数</span><strong>${report.activeDays}</strong></article><article><span>记录前均值</span><strong>${report.averageBefore}</strong></article><article><span>记录后均值</span><strong>${report.averageAfter}</strong></article></div>
+    <div class="section-head"><h3>${report.patternReady ? '这段时间的线索' : '正在积累线索'}</h3></div>
+    ${report.patternReady ? renderPeriodSignals(report) : `<article class="evidence-card"><div class="evidence-progress"><span style="width:${Math.min(100, (report.count / 3) * 100)}%"></span></div><strong>先让记录跨过不同的日子</strong><p>${evidenceCopy}</p></article>`}
+    <article class="care-observation"><div><span class="detail-label">下一次可以试试</span><h3>${actionTitle}</h3><p>${actionCopy}</p></div>${actionType ? `<button class="soft-button" data-tool="${actionType}">开始练习</button>` : '<button class="soft-button" data-go="tools">打开工具箱</button>'}</article>
+    <div class="disclaimer">${evidenceCopy}${report.sessionCount ? ` 其中 ${report.sessionCount} 条仅在当前页面可见。` : ''}</div>
+    <div class="section-head"><h3>${periodLabel}记录</h3><button class="text-button" data-go="history">查看全部</button></div>
+    <div class="history-list">${report.entries.slice(0, 4).map(renderHistoryCard).join('')}</div>
   </section>`;
 }
 
 function chartPoints(entries) {
-  const values = entries.length ? entries : sampleEntries;
+  if (!entries.length || entries.some(item => !Number.isFinite(item.after) || !Number.isFinite(Date.parse(item.createdAt)))) return null;
+  const values = entries;
   const xStep = values.length > 1 ? 290 / (values.length - 1) : 0;
   const coords = values.map((item, index) => ({ x: 20 + index * xStep, y: 148 - ((Number(item.after ?? item.before) - 1) / 9) * 112, item }));
   const line = coords.map((p, i) => `${i ? 'L' : 'M'} ${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(' ');
@@ -1141,6 +1283,13 @@ function chartPoints(entries) {
   const circles = coords.map(p => `<circle class="point" cx="${p.x}" cy="${p.y}" r="5"/>`).join('');
   const labels = coords.map(p => `<text x="${p.x}" y="168" text-anchor="middle">${new Date(p.item.createdAt).getMonth() + 1}/${new Date(p.item.createdAt).getDate()}</text>`).join('');
   return { line, area, circles, labels };
+}
+
+function renderPeriodSignals(report) {
+  const change = report.averageChange > 0 ? `平均下降 ${report.averageChange} 格` : report.averageChange < 0 ? `平均上升 ${Math.abs(report.averageChange)} 格` : '平均保持不变';
+  const bars = report.triggerBreakdown.slice(0, 4).map(item => `<div class="signal-row"><span>${escapeHtml(item.name)}</span><div><i style="width:${item.share}%"></i></div><strong>${item.count} 次</strong></div>`).join('');
+  return `<div class="mini-grid"><article class="mini-card"><span>常见情绪</span><strong>${moodEmoji[report.dominantMood.name] || '◌'} ${escapeHtml(report.dominantMood.name)}</strong></article><article class="mini-card"><span>记录后变化</span><strong>${change}</strong></article></div>
+    <article class="signal-card"><div class="signal-head"><div><span class="detail-label">触发因素分布</span><h3>${escapeHtml(report.topTrigger.name)}出现较多</h3></div><strong>${report.topTrigger.share}%</strong></div>${bars}</article>`;
 }
 
 function renderHistoryCard(item) {
@@ -1254,7 +1403,17 @@ function finishExercise() {
     notify('练习完成。谢谢你照顾了此刻的自己');
     return;
   }
-  draft.after = Math.max(1, draft.intensity - 2);
+  const outcome = resolveCareOutcome({ intensity: draft.intensity, exerciseType: draft.exercise?.type, completed: true });
+  draft.after = outcome.after;
+  draft.careType = outcome.careType;
+  go('result');
+}
+
+function skipExercise() {
+  if (draft.exerciseOrigin === 'toolbox') return go('tools');
+  const outcome = resolveCareOutcome({ intensity: draft.intensity, exerciseType: draft.exercise?.type, completed: false });
+  draft.after = outcome.after;
+  draft.careType = outcome.careType;
   go('result');
 }
 
@@ -1269,7 +1428,7 @@ async function saveDraft() {
     trigger: draft.trigger,
     before: draft.intensity,
     after: draft.after,
-    careType: draft.exercise?.type || 'skipped',
+    careType: draft.careType,
     note: draft.note,
     insight: draft.insight
   };
@@ -1287,20 +1446,17 @@ async function saveDraft() {
     return;
   }
   if (result.status === 'failed' || result.status === 'readonly') {
-    persisted = readEntries(storage);
-    storageWritable = persisted.mode === 'writable';
+    applyStoredSnapshot(readEntries(storage), false);
     draft.saved = true;
     resumableDiaryView = null;
-    if (!sessionEntries.some(item => item.id === entry.id)) sessionEntries.unshift({ ...entry, source: 'session' });
+    if (!userEntries.some(item => item.id === entry.id) && !sessionEntries.some(item => item.id === entry.id)) sessionEntries.unshift({ ...entry, source: 'session' });
     go('climate');
     notify('浏览器未能保存；本次结果仅在当前页面有效');
     return;
   }
   draft.saved = true;
   resumableDiaryView = null;
-  storageWritable = true;
-  userEntries = result.entries.map(item => ({ ...item, source: 'user' }));
-  persisted = readEntries(storage);
+  applyStoredSnapshot({ mode: 'writable', entries: result.entries }, false);
   go('climate');
 }
 
@@ -1308,6 +1464,7 @@ function startTool(type) {
   const tools = {
     breathe: { type: 'breathe', title: '一分钟柔和呼吸', duration: 60, reason: '不用追求深呼吸，只需要让呼气比吸气稍微长一点。' },
     ground: { type: 'ground', title: '感官落地练习', duration: 0, reason: '把注意力从反复的念头，温和地带回此刻。' },
+    plan: { type: 'plan', title: '三分钟最小行动', duration: 0, reason: '不用解决整件事，只把担心缩成一个现在能完成的动作。' },
     move: { type: 'move', title: '三分钟轻柔活动', duration: 0, reason: '不追求运动量，只让久坐和紧绷的身体重新流动。' }
   };
   if (!tools[type]) return;
@@ -1333,8 +1490,7 @@ async function deleteActiveEntry() {
   if (!window.confirm('确认删除这条情绪日记吗？删除后无法恢复。')) return;
   const result = await withStorageLock(() => removeEntryById(storage, item.id));
   if (result.status !== 'removed') return notify('未能删除，记录仍然保留');
-  userEntries = result.entries.map(entry => ({ ...entry, source: 'user' }));
-  persisted = { mode: 'writable', entries: result.entries };
+  applyStoredSnapshot({ mode: 'writable', entries: result.entries }, false);
   activeEntry = null;
   go(detailReturnView);
   notify('这条记录已删除');
@@ -1373,6 +1529,7 @@ async function clearPersonalData() {
 async function exportPersonalData() {
   const latest = await withStorageLock(() => readEntries(storage));
   if (latest.mode !== 'writable') return notify('暂时无法读取已保存记录');
+  applyStoredSnapshot(latest, false);
   const payload = createExportPayload(latest.entries.map(item => ({ ...item, source: 'user' })), new Date());
   if (!payload.entries.length) return notify('还没有可以导出的个人记录');
   const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
@@ -1384,6 +1541,7 @@ async function exportPersonalData() {
   link.click();
   link.remove();
   setTimeout(() => URL.revokeObjectURL(url), 500);
+  render();
 }
 
 async function restorePersonalData(file) {
@@ -1402,32 +1560,36 @@ async function restorePersonalData(file) {
     result = await withStorageLock(() => importEntries(storage, text, { allowReplaceCorrupt: true }));
   }
   if (result.status === 'imported') {
-    reconcileStoredEntries({ mode: 'writable', entries: result.entries });
+    applyStoredSnapshot({ mode: 'writable', entries: result.entries });
     return notify(`已恢复 ${result.added} 条记录${result.skipped ? `，跳过 ${result.skipped} 条重复` : ''}`);
   }
   if (result.status === 'duplicate') {
-    reconcileStoredEntries({ mode: 'writable', entries: result.entries });
+    applyStoredSnapshot({ mode: 'writable', entries: result.entries });
     return notify('这些记录已在心屿中，没有重复导入');
   }
   if (result.status === 'empty') return notify('文件中没有可恢复的有效记录');
   if (result.status === 'too-large' || result.status === 'too-many') return notify('备份内容过大，未导入');
   if (result.status === 'invalid-json' || result.status === 'invalid-format') return notify('这不是有效的心屿备份文件');
   if (result.status === 'unsupported') return notify('备份版本或来源不受支持');
-  reconcileStoredEntries(readEntries(storage));
+  applyStoredSnapshot(readEntries(storage));
   notify(result.status === 'readonly' ? '浏览器存储处于只读保护' : '恢复未完成，现有记录仍以浏览器实际内容为准');
 }
 
-function reconcileStoredEntries(snapshot) {
-  userEntries = snapshot.entries.map(item => ({ ...item, source: 'user' }));
+function applyStoredSnapshot(snapshot, shouldRender = true) {
+  const nextUsers = snapshot.entries.map(item => ({ ...item, source: 'user' }));
+  const reconciled = reconcileEntrySources(nextUsers, sessionEntries);
+  userEntries = reconciled.userEntries;
+  sessionEntries = reconciled.sessionEntries;
   persisted = snapshot;
   storageWritable = snapshot.mode === 'writable';
-  render();
+  if (shouldRender) render();
 }
 
 document.addEventListener('click', event => {
   const target = event.target.closest('button, [data-go]');
   if (!target) return;
   if (target.dataset.go) return go(target.dataset.go);
+  if (target.dataset.climateDays) { climateDays = Number(target.dataset.climateDays) === 30 ? 30 : 7; return render(); }
   if (target.hasAttribute('data-resume-diary') && resumableDiaryView) {
     const resumeView = resumableDiaryView;
     resumableDiaryView = null;
@@ -1462,7 +1624,7 @@ document.addEventListener('click', event => {
   if (target.hasAttribute('data-recommend')) { draft.exercise = chooseExercise(draft); return go('exercise'); }
   if (target.hasAttribute('data-breathe-start')) return startBreathing();
   if (target.hasAttribute('data-ex-complete')) return finishExercise();
-  if (target.hasAttribute('data-skip')) return draft.exerciseOrigin === 'toolbox' ? go('tools') : finishExercise();
+  if (target.hasAttribute('data-skip')) return skipExercise();
   if (target.hasAttribute('data-save')) return saveDraft();
   if (target.hasAttribute('data-clear')) return clearPersonalData();
   if (target.hasAttribute('data-export')) return exportPersonalData();
@@ -1507,7 +1669,11 @@ document.addEventListener('change', event => {
   if (event.target.matches('[data-ex-step]')) {
     const boxes = [...document.querySelectorAll('[data-ex-step]')];
     const button = document.querySelector('[data-ex-complete]');
-    if (button) button.textContent = boxes.every(box => box.checked) ? (draft.exerciseOrigin === 'toolbox' ? '完成练习' : '完成了，记录变化') : (draft.exercise?.type === 'move' ? '身体松开一点了' : '这个动作已经足够小');
+    if (button) {
+      const complete = boxes.every(box => box.checked);
+      button.disabled = !complete;
+      button.textContent = complete ? (draft.exerciseOrigin === 'toolbox' ? '完成练习' : '完成了，记录变化') : '完成全部步骤后继续';
+    }
   }
 });
 
