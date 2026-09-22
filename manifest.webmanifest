@@ -1,0 +1,18 @@
+{
+  "id": "./",
+  "name": "心屿 · 情绪天气台",
+  "short_name": "心屿",
+  "description": "记录情绪天气，看见触发因素，用轻量练习照顾自己。",
+  "lang": "zh-CN",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f7f3ee",
+  "theme_color": "#6f63a9",
+  "x_build_id": "a6f349511b5c",
+  "icons": [
+    { "src": "./icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "./icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" },
+    { "src": "./icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

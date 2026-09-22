@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="sky" x1="72" y1="56" x2="438" y2="458" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#655b9b"/>
+      <stop offset="0.55" stop-color="#8b729f"/>
+      <stop offset="1" stop-color="#d69c9f"/>
+    </linearGradient>
+    <linearGradient id="island" x1="174" y1="314" x2="356" y2="413" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#d9d3ed"/>
+      <stop offset="1" stop-color="#a9bba4"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#sky)"/>
+  <circle cx="244" cy="214" r="116" fill="#fff" fill-opacity="0.12"/>
+  <path d="M282 105c-70 12-121 74-111 146 10 71 75 120 146 108-48-16-78-54-84-99-7-46 11-91 49-121 10-8 10-25 0-34Z" fill="#fff" fill-opacity="0.94"/>
+  <path d="M112 402c31-47 77-71 137-71 69 0 120 24 153 71-70 28-218 28-290 0Z" fill="url(#island)" fill-opacity="0.95"/>
+  <path d="M76 427c98 27 262 27 360 0" fill="none" stroke="#fff" stroke-opacity="0.28" stroke-width="14" stroke-linecap="round"/>
+</svg>
