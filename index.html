@@ -1,42 +1,918 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="theme-color" content="#111827" />
-  <title>心屿 · 情绪日记与自我关怀</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#f5f1ed">
+  <meta name="description" content="心屿：把情绪变成可以理解和照顾的天气。">
+  <title>心屿 · 情绪天气台</title>
   <style>
-    :root{--bg:#f5f3ff;--ink:#182030;--muted:#697386;--card:rgba(255,255,255,.78);--purple:#7c5cff;--pink:#ff7c9e;--green:#56b894;--line:rgba(34,40,58,.09)}
-    *{box-sizing:border-box}body{margin:0;font-family:Inter,"PingFang SC","Microsoft YaHei",sans-serif;color:var(--ink);background:radial-gradient(circle at 8% 5%,#e8dcff 0,transparent 34%),radial-gradient(circle at 92% 30%,#ffe0e7 0,transparent 30%),linear-gradient(150deg,#f8f6ff,#eef8f5);min-height:100vh}
-    button,textarea{font:inherit}button{cursor:pointer}.shell{max-width:1120px;margin:auto;padding:26px 22px 90px}.nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:44px}.brand{font-weight:800;font-size:20px}.brand span{display:inline-grid;place-items:center;width:34px;height:34px;margin-right:9px;border-radius:12px;background:linear-gradient(135deg,var(--purple),var(--pink));color:#fff}.pill{padding:9px 14px;border-radius:999px;background:#ffffff99;color:var(--muted);font-size:13px;border:1px solid #fff}
-    .hero{display:grid;grid-template-columns:1.15fr .85fr;gap:28px;align-items:center}.eyebrow{font-size:13px;font-weight:700;color:var(--purple);letter-spacing:.12em}.hero h1{font-size:clamp(38px,6vw,70px);line-height:1.06;margin:14px 0 16px;letter-spacing:-.055em}.hero h1 em{font-style:normal;color:var(--purple)}.lead{font-size:18px;line-height:1.8;color:var(--muted);max-width:620px}.cta{margin-top:24px;padding:15px 22px;border:0;border-radius:16px;background:var(--ink);color:#fff;font-weight:700;box-shadow:0 12px 25px #18203025}.aside{padding:26px;border:1px solid #ffffffc0;border-radius:28px;background:var(--card);backdrop-filter:blur(18px);box-shadow:0 20px 70px #51477f20}.aside h3{margin:0 0 5px}.week{display:flex;gap:10px;align-items:end;height:160px;margin-top:18px}.day{flex:1;text-align:center;color:var(--muted);font-size:11px}.bar{margin:0 auto 8px;width:100%;max-width:28px;border-radius:12px 12px 6px 6px;background:linear-gradient(#9b82ff,#e5ddff)}.today .bar{background:linear-gradient(var(--pink),#ffd5df)}
-    .section{margin-top:76px}.section h2{font-size:30px;margin:0 0 8px}.sub{color:var(--muted);margin:0 0 24px}.checkin{display:grid;grid-template-columns:.85fr 1.15fr;gap:20px}.card{border:1px solid #fff;border-radius:24px;background:var(--card);backdrop-filter:blur(16px);padding:24px;box-shadow:0 16px 45px #4f477515}.moods{display:grid;grid-template-columns:repeat(5,1fr);gap:9px;margin:20px 0}.mood{border:1px solid var(--line);background:#fff9;border-radius:16px;padding:13px 4px;font-size:26px;transition:.2s}.mood small{display:block;font-size:11px;color:var(--muted);margin-top:5px}.mood.active{transform:translateY(-4px);border-color:var(--purple);box-shadow:0 8px 18px #7c5cff28}.scale{display:flex;justify-content:space-between;color:var(--muted);font-size:12px}.range{width:100%;accent-color:var(--purple);margin:14px 0}textarea{width:100%;min-height:145px;resize:vertical;border:1px solid var(--line);border-radius:16px;padding:15px;background:#fff9;outline:none;line-height:1.65}.save{width:100%;border:0;border-radius:14px;padding:13px;background:var(--purple);color:#fff;font-weight:700;margin-top:12px}
-    .insight{display:none;margin-top:20px;animation:up .45s ease}.insight.show{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.mini{padding:18px;border-radius:18px;background:#fff9;border:1px solid var(--line)}.mini b{display:block;margin-bottom:8px}.mini p{margin:0;color:var(--muted);line-height:1.55;font-size:14px}.action{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;background:linear-gradient(135deg,#26223c,#35304e);color:white}.action p{color:#d7d2e8}.breathe{border:0;background:#fff;color:var(--ink);border-radius:12px;padding:10px 14px;font-weight:700}
-    .features{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.feature{min-height:205px}.ico{width:48px;height:48px;border-radius:16px;display:grid;place-items:center;background:#ece7ff;font-size:23px}.feature h3{margin:24px 0 8px}.feature p{color:var(--muted);line-height:1.7}.safety{margin-top:24px;padding:18px 22px;border-radius:20px;background:#fff7;color:var(--muted);font-size:13px;border:1px solid #fff}.modal{position:fixed;inset:0;display:none;place-items:center;background:#111827aa;backdrop-filter:blur(7px);z-index:5}.modal.show{display:grid}.breathbox{text-align:center;color:white}.circle{width:150px;height:150px;border-radius:50%;margin:22px auto;background:radial-gradient(circle,#fff,#aa98ff);box-shadow:0 0 70px #c4b9ff;animation:breathe 8s ease-in-out infinite}.close{border:1px solid #ffffff55;background:#ffffff18;color:#fff;border-radius:12px;padding:10px 20px}@keyframes breathe{50%{transform:scale(1.38);opacity:.72}}@keyframes up{from{opacity:0;transform:translateY(12px)}}
-    @media(max-width:760px){.hero,.checkin{grid-template-columns:1fr}.aside{margin-top:8px}.features,.insight.show{grid-template-columns:1fr}.action{grid-column:auto;gap:12px}.hero h1{font-size:44px}.moods{gap:5px}.mood{font-size:22px}.nav{margin-bottom:26px}}
-  </style>
+:root {
+  --ink: #27241f;
+  --muted: #777066;
+  --paper: #f7f3ee;
+  --card: rgba(255, 255, 255, .72);
+  --line: rgba(55, 47, 38, .11);
+  --purple: #6f63a9;
+  --purple-dark: #514783;
+  --lavender: #d9d3ed;
+  --peach: #eebf9e;
+  --sage: #a9bba4;
+  --danger: #a94d4d;
+  --shadow: 0 18px 50px rgba(78, 61, 50, .11);
+}
+
+* { box-sizing: border-box; }
+
+html { min-height: 100%; background: var(--paper); }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 18% 8%, rgba(239, 191, 158, .35), transparent 28rem),
+    radial-gradient(circle at 86% 38%, rgba(187, 177, 222, .4), transparent 30rem),
+    linear-gradient(160deg, #faf6f1 0%, #f3efea 52%, #eeeaf2 100%);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+button, textarea, input { font: inherit; }
+button { color: inherit; }
+button:focus-visible, textarea:focus-visible, input:focus-visible {
+  outline: 3px solid rgba(111, 99, 169, .24);
+  outline-offset: 2px;
+}
+
+.ambient {
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(3px);
+  opacity: .5;
+}
+.ambient-a { width: 240px; height: 240px; top: -110px; right: -80px; background: rgba(184, 174, 220, .35); }
+.ambient-b { width: 180px; height: 180px; bottom: 5%; left: -100px; background: rgba(236, 184, 144, .24); }
+
+.app-shell {
+  width: min(100%, 560px);
+  min-height: 100vh;
+  margin: 0 auto;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.topbar {
+  height: 72px;
+  padding: max(12px, env(safe-area-inset-top)) 20px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: linear-gradient(to bottom, rgba(247,243,238,.94), rgba(247,243,238,.68), transparent);
+  backdrop-filter: blur(12px);
+}
+
+.brand { border: 0; background: transparent; padding: 8px 0; display: flex; align-items: center; gap: 9px; font-weight: 760; letter-spacing: .08em; cursor: pointer; }
+.brand-mark { width: 29px; height: 29px; display: grid; place-items: center; border-radius: 50%; color: #fff; background: linear-gradient(145deg, var(--purple), #aa86a9); box-shadow: 0 6px 16px rgba(96,77,137,.25); }
+.icon-button { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line); background: rgba(255,255,255,.5); display: grid; place-items: center; cursor: pointer; }
+.icon-button svg, .bottom-nav svg { width: 21px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+
+#app { flex: 1; padding: 12px 20px 110px; }
+.screen { animation: screen-in .35s cubic-bezier(.2,.8,.2,1); }
+@keyframes screen-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+.eyebrow { margin: 0 0 8px; color: var(--purple-dark); font-size: 12px; font-weight: 760; letter-spacing: .16em; text-transform: uppercase; }
+h1 { margin: 0; font-size: clamp(30px, 8vw, 42px); line-height: 1.12; letter-spacing: -.04em; }
+h2 { margin: 0; font-size: 24px; line-height: 1.25; letter-spacing: -.025em; }
+h3 { margin: 0; font-size: 17px; }
+p { line-height: 1.65; }
+.muted { color: var(--muted); }
+.small { font-size: 13px; }
+.section-head { display: flex; justify-content: space-between; align-items: end; gap: 12px; margin: 28px 2px 13px; }
+.section-head a, .text-button { min-height: 44px; padding: 10px 8px; border: 0; background: transparent; color: var(--purple-dark); font-weight: 650; cursor: pointer; text-decoration: none; }
+
+.hero-copy { margin-top: 7px; max-width: 430px; }
+.hero-copy p { color: var(--muted); margin: 12px 0 0; }
+
+.weather-card {
+  min-height: 295px;
+  margin-top: 24px;
+  padding: 26px;
+  border-radius: 32px;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(150deg, #5f578f 0%, #7d6e9d 45%, #c18fa1 100%);
+  box-shadow: 0 24px 60px rgba(83, 69, 121, .26);
+  isolation: isolate;
+}
+.weather-card::before, .weather-card::after { content: ""; position: absolute; border-radius: 50%; z-index: -1; filter: blur(1px); }
+.weather-card::before { width: 230px; height: 230px; right: -70px; top: -60px; background: radial-gradient(circle at 35% 35%, rgba(255,255,255,.5), rgba(255,255,255,.04) 55%, transparent 70%); animation: drift 8s ease-in-out infinite; }
+.weather-card::after { width: 160px; height: 160px; left: -40px; bottom: -72px; background: rgba(239,189,160,.22); animation: drift 10s ease-in-out infinite reverse; }
+@keyframes drift { 50% { transform: translate(12px, 8px) scale(1.06); } }
+.weather-meta { display: flex; align-items: center; justify-content: space-between; font-size: 13px; color: rgba(255,255,255,.75); }
+.weather-label { display: inline-flex; gap: 7px; align-items: center; }
+.weather-dot { width: 7px; height: 7px; border-radius: 50%; background: #f5d1b3; box-shadow: 0 0 0 5px rgba(245,209,179,.14); }
+.weather-main { margin-top: 43px; }
+.weather-main strong { display: block; font-size: 38px; letter-spacing: -.05em; }
+.weather-main p { margin: 7px 0 0; max-width: 310px; color: rgba(255,255,255,.78); }
+.weather-footer { position: absolute; left: 26px; right: 26px; bottom: 25px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.weather-mini { font-size: 12px; color: rgba(255,255,255,.68); }
+
+.primary, .secondary, .soft-button, .danger-button {
+  min-height: 50px;
+  border: 0;
+  border-radius: 17px;
+  padding: 13px 20px;
+  font-weight: 730;
+  cursor: pointer;
+  transition: transform .18s ease, opacity .18s ease, box-shadow .18s ease;
+}
+.primary:hover, .secondary:hover, .soft-button:hover { transform: translateY(-1px); }
+.primary { color: #fff; background: var(--ink); box-shadow: 0 12px 24px rgba(39,36,31,.17); }
+.primary.light { color: var(--ink); background: rgba(255,255,255,.92); box-shadow: none; }
+.primary.full, .secondary.full { width: 100%; }
+.secondary { background: rgba(255,255,255,.65); border: 1px solid var(--line); }
+.soft-button { background: rgba(111,99,169,.1); color: var(--purple-dark); }
+.danger-button { background: rgba(169,77,77,.1); color: var(--danger); }
+.button-row { display: flex; gap: 10px; margin-top: 22px; }
+.button-row > * { flex: 1; }
+button:disabled { opacity: .45; cursor: not-allowed; transform: none !important; }
+
+.mini-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.mini-card, .panel, .insight-card, .history-card {
+  border: 1px solid var(--line);
+  background: var(--card);
+  backdrop-filter: blur(16px);
+  box-shadow: var(--shadow);
+}
+.mini-card { padding: 17px; border-radius: 21px; }
+.mini-card span { display: block; color: var(--muted); font-size: 12px; margin-bottom: 10px; }
+.mini-card strong { font-size: 17px; }
+.panel { border-radius: 26px; padding: 22px; }
+
+.stepper { display: flex; gap: 7px; margin: 4px 0 26px; }
+.stepper span { height: 4px; flex: 1; border-radius: 99px; background: rgba(39,36,31,.1); }
+.stepper span.active { background: var(--purple); }
+.prompt { margin: 8px 0 20px; color: var(--muted); }
+
+.choice-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.choice, .segmented button {
+  min-height: 58px;
+  border-radius: 18px;
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,.6);
+  cursor: pointer;
+  font-weight: 650;
+}
+.choice { display: flex; align-items: center; gap: 10px; padding: 13px 14px; text-align: left; }
+.choice .emoji { font-size: 23px; }
+.choice.selected, .segmented button.selected { border-color: rgba(111,99,169,.7); background: rgba(217,211,237,.55); box-shadow: inset 0 0 0 1px rgba(111,99,169,.2); }
+.trigger-grid { grid-template-columns: repeat(4, 1fr); }
+.trigger-grid .choice { min-height: 52px; justify-content: center; padding: 8px 4px; font-size: 13px; }
+
+.range-wrap { margin: 24px 0; }
+.range-labels { display: flex; justify-content: space-between; color: var(--muted); font-size: 12px; }
+.range-value { display: flex; align-items: baseline; gap: 7px; margin-bottom: 10px; }
+.range-value strong { font-size: 34px; }
+input[type="range"] { width: 100%; accent-color: var(--purple); }
+textarea { width: 100%; min-height: 132px; resize: vertical; border: 1px solid var(--line); border-radius: 20px; padding: 16px; color: var(--ink); background: rgba(255,255,255,.62); line-height: 1.55; }
+.suggestion-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.suggestion-chips button { border: 1px solid var(--line); background: rgba(255,255,255,.58); border-radius: 999px; padding: 9px 12px; color: var(--muted); cursor: pointer; font-size: 12px; }
+
+.loading-orb { width: 120px; height: 120px; border-radius: 50%; margin: 80px auto 24px; background: radial-gradient(circle at 35% 30%, #f8ded0, #9a8bbb 62%, #5f578f); box-shadow: 0 18px 50px rgba(95,87,143,.28); animation: breathe 2.4s ease-in-out infinite; }
+@keyframes breathe { 50% { transform: scale(1.1); box-shadow: 0 25px 70px rgba(95,87,143,.35); } }
+.loading-copy { text-align: center; }
+
+.insight-stack { display: grid; gap: 11px; margin-top: 24px; }
+.insight-card { border-radius: 22px; padding: 18px; display: grid; grid-template-columns: 42px 1fr; gap: 13px; align-items: start; }
+.insight-icon { width: 42px; height: 42px; display: grid; place-items: center; border-radius: 14px; background: rgba(217,211,237,.55); font-size: 19px; }
+.insight-card small { color: var(--muted); display: block; margin-bottom: 5px; }
+.insight-card p { margin: 0; line-height: 1.55; }
+.tag { display: inline-flex; margin: 3px 5px 0 0; padding: 6px 10px; border-radius: 999px; font-size: 12px; background: rgba(111,99,169,.09); color: var(--purple-dark); }
+.disclaimer { padding: 13px 15px; border-radius: 16px; color: var(--muted); background: rgba(255,255,255,.42); font-size: 12px; line-height: 1.55; margin-top: 16px; }
+
+.option-block { margin: 22px 0; }
+.option-block label { font-weight: 700; display: block; margin-bottom: 10px; }
+.segmented { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 8px; }
+.segmented button { min-height: 48px; font-size: 13px; }
+
+.exercise-hero { padding: 26px; border-radius: 30px; color: #fff; background: linear-gradient(150deg, #655d91, #987b9b 65%, #d3a48d); box-shadow: 0 20px 55px rgba(89,72,123,.24); }
+.exercise-hero .eyebrow { color: rgba(255,255,255,.7); }
+.exercise-hero p { color: rgba(255,255,255,.76); }
+.breath-stage { min-height: 255px; display: grid; place-items: center; position: relative; }
+.breath-circle { width: 145px; height: 145px; border-radius: 50%; display: grid; place-items: center; text-align: center; background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.3); box-shadow: inset 0 0 40px rgba(255,255,255,.1); animation: breath-guide 8s ease-in-out infinite; }
+.breath-circle strong { display: block; font-size: 30px; }
+.breath-circle span { font-size: 12px; color: rgba(255,255,255,.72); }
+@keyframes breath-guide { 0%,100% { transform: scale(.86); } 50% { transform: scale(1.08); } }
+.exercise-list { display: grid; gap: 10px; margin-top: 22px; }
+.exercise-step { display: flex; gap: 12px; align-items: center; padding: 15px; border-radius: 17px; background: rgba(255,255,255,.12); cursor: pointer; }
+.exercise-step input { width: 20px; height: 20px; accent-color: #fff; }
+
+.result-orb { width: 116px; height: 116px; margin: 28px auto 16px; display: grid; place-items: center; border-radius: 50%; color: #fff; background: linear-gradient(145deg, #8375ab, #d3a185); box-shadow: 0 20px 50px rgba(97,79,132,.25); }
+.result-orb strong { font-size: 30px; }
+.center { text-align: center; }
+
+.chart-card { border-radius: 28px; padding: 22px 18px 17px; color: #fff; background: linear-gradient(150deg, #58517f, #7e719b); box-shadow: 0 20px 52px rgba(80,69,116,.22); }
+.chart-head { display: flex; justify-content: space-between; align-items: start; gap: 10px; }
+.chart-badge { border-radius: 999px; padding: 7px 10px; background: rgba(255,255,255,.13); font-size: 11px; color: rgba(255,255,255,.78); }
+.chart { height: 170px; width: 100%; margin-top: 10px; overflow: visible; }
+.chart .grid { stroke: rgba(255,255,255,.11); stroke-width: 1; }
+.chart .area { fill: url(#areaGradient); }
+.chart .line { fill: none; stroke: #f7d4bb; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.chart .point { fill: #fff; stroke: #776a96; stroke-width: 3; }
+.chart text { fill: rgba(255,255,255,.58); font-size: 10px; }
+.history-list { display: grid; gap: 10px; }
+.history-card { padding: 16px; border-radius: 20px; display: grid; grid-template-columns: 45px 1fr auto; gap: 12px; align-items: center; }
+.history-weather { width: 45px; height: 45px; display: grid; place-items: center; border-radius: 15px; background: rgba(217,211,237,.48); font-size: 21px; }
+.history-card p { margin: 2px 0 0; color: var(--muted); font-size: 12px; }
+.source-label { padding: 5px 8px; border-radius: 999px; font-size: 10px; color: var(--muted); background: rgba(39,36,31,.05); }
+.source-label.mine { color: var(--purple-dark); background: rgba(111,99,169,.1); }
+
+.safety-card { border: 1px solid rgba(169,77,77,.16); border-radius: 30px; padding: 26px; background: rgba(255,250,247,.8); box-shadow: var(--shadow); }
+.safety-symbol { width: 60px; height: 60px; display: grid; place-items: center; border-radius: 20px; background: rgba(169,77,77,.1); color: var(--danger); font-size: 26px; }
+.hotline { margin: 20px 0; padding: 18px; border-radius: 20px; background: rgba(169,77,77,.08); }
+.hotline span { color: var(--muted); font-size: 12px; }
+.hotline a { display: block; margin-top: 4px; color: var(--danger); font-size: 30px; font-weight: 800; text-decoration: none; letter-spacing: .08em; }
+
+.privacy-row { padding: 17px 0; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; gap: 18px; align-items: center; }
+.privacy-row:last-child { border-bottom: 0; }
+.privacy-row p { margin: 3px 0 0; font-size: 12px; color: var(--muted); }
+.status-pill { flex: 0 0 auto; padding: 6px 9px; border-radius: 999px; background: rgba(169,187,164,.2); color: #526852; font-size: 11px; font-weight: 700; }
+
+.bottom-nav {
+  position: fixed;
+  z-index: 30;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(calc(100% - 28px), 520px);
+  min-height: 68px;
+  padding: 7px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  border: 1px solid rgba(255,255,255,.65);
+  border-radius: 23px;
+  background: rgba(253,251,248,.82);
+  box-shadow: 0 20px 50px rgba(59,48,43,.16);
+  backdrop-filter: blur(22px);
+}
+.bottom-nav button { min-height: 52px; display: flex; flex-direction: column; gap: 3px; align-items: center; justify-content: center; border: 0; border-radius: 17px; background: transparent; color: var(--muted); cursor: pointer; font-size: 10px; }
+.bottom-nav button.active { color: var(--purple-dark); background: rgba(217,211,237,.42); }
+
+.toast { position: fixed; z-index: 99; left: 50%; bottom: 96px; transform: translate(-50%, 16px); padding: 11px 16px; border-radius: 14px; background: rgba(39,36,31,.92); color: #fff; font-size: 12px; opacity: 0; pointer-events: none; transition: .25s ease; max-width: calc(100% - 40px); text-align: center; }
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+@media (min-width: 760px) {
+  body::before { content: "把情绪变成\A可以理解和照顾的天气"; white-space: pre; position: fixed; left: max(30px, calc(50vw - 520px)); top: 20vh; width: 250px; color: rgba(39,36,31,.34); font-size: 18px; line-height: 1.55; letter-spacing: .06em; }
+  .app-shell { border-left: 1px solid rgba(255,255,255,.65); border-right: 1px solid rgba(255,255,255,.65); background: rgba(247,243,238,.26); box-shadow: 0 0 80px rgba(74,60,52,.06); }
+}
+
+@media (max-width: 380px) {
+  #app { padding-left: 15px; padding-right: 15px; }
+  .topbar { padding-left: 15px; padding-right: 15px; }
+  .weather-card { padding: 21px; }
+  .weather-footer { left: 21px; right: 21px; }
+  .trigger-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .001ms !important; }
+}
+
+</style>
 </head>
 <body>
-  <main class="shell">
-    <nav class="nav"><div class="brand"><span>心</span>心屿</div><div class="pill">🔒 日记仅保存在本机</div></nav>
-    <section class="hero">
-      <div><div class="eyebrow">你的情绪，有迹可循</div><h1>给情绪一个<br><em>被看见</em>的地方</h1><p class="lead">用 30 秒记录此刻。AI 帮你分清事实、想法与需要，再推荐一件现在就能做到的小事。</p><button class="cta" onclick="document.querySelector('#check').scrollIntoView({behavior:'smooth'})">开始今日心情 →</button></div>
-      <aside class="aside"><h3>本周情绪潮汐</h3><span class="sub">不是给心情打分，而是看见变化</span><div class="week" id="week"></div></aside>
-    </section>
-    <section class="section" id="check"><h2>此刻，你感觉怎么样？</h2><p class="sub">不用组织语言，选一个最接近的就好。</p>
-      <div class="checkin"><div class="card"><b>选择情绪</b><div class="moods"><button class="mood" data-name="低落">😔<small>低落</small></button><button class="mood" data-name="焦虑">😣<small>焦虑</small></button><button class="mood active" data-name="平静">😌<small>平静</small></button><button class="mood" data-name="开心">🙂<small>开心</small></button><button class="mood" data-name="充满能量">🤩<small>能量</small></button></div><b>情绪强度 <span id="level">5</span>/10</b><input id="range" class="range" type="range" min="1" max="10" value="5"><div class="scale"><span>轻微</span><span>强烈</span></div></div>
-        <div class="card"><b>发生了什么？</b><p class="sub">一句话也可以。AI 只做温柔的梳理，不做诊断。</p><textarea id="note" placeholder="比如：明天要做汇报，我担心准备得不够好……">明天要做项目汇报，虽然准备了很久，还是担心自己表现不好。</textarea><button class="save" id="save">记录并获得关怀建议</button></div></div>
-      <div class="insight" id="insight"><div class="mini"><b>🧭 可能的触发</b><p>即将到来的工作评价，让你对“不够好”产生了担心。</p></div><div class="mini"><b>💬 AI 温柔镜像</b><p>这份焦虑也说明你很重视成果。已经投入的准备，不会因为紧张而消失。</p></div><div class="mini"><b>🌱 此刻的需要</b><p>不是继续逼自己，而是找回一点确定感与身体的稳定。</p></div><div class="mini action"><div><b>给自己 1 分钟</b><p>跟随呼吸球：吸气 4 秒，呼气 4 秒。</p></div><button class="breathe" id="breathe">开始呼吸</button></div></div>
-    </section>
-    <section class="section"><h2>从记录，到真正有用</h2><p class="sub">每一次反馈，都让建议更懂你。</p><div class="features"><div class="card feature"><div class="ico">🗺️</div><h3>情绪触发地图</h3><p>发现人物、事件、时间和身体状态与情绪的关联，用“可能相关”代替武断归因。</p></div><div class="card feature"><div class="ico">🫶</div><h3>微小关怀处方</h3><p>根据你的时间、精力与环境，推荐 1–5 分钟的呼吸、音乐、运动或表达练习。</p></div><div class="card feature"><div class="ico">✉️</div><h3>每周自我来信</h3><p>不做冷冰冰的数据报告，而是总结你熬过了什么、什么真正帮助了你。</p></div></div></section>
-    <div class="safety">心屿是自我关怀工具，不替代专业诊断或治疗。若你正处于危机中，请立即联系身边可信任的人、当地急救服务或拨打全国心理援助热线 12356。</div>
-  </main>
-  <div class="modal" id="modal"><div class="breathbox"><h2 id="breathText">慢慢吸气</h2><div class="circle"></div><p>允许这一分钟，只属于你。</p><button class="close" id="close">结束练习</button></div></div>
+  <div class="ambient ambient-a"></div>
+  <div class="ambient ambient-b"></div>
+  <div class="app-shell">
+    <header class="topbar">
+      <button class="brand" data-go="home" aria-label="返回心屿首页">
+        <span class="brand-mark" aria-hidden="true">◐</span>
+        <span>心屿</span>
+      </button>
+      <button class="icon-button" data-go="privacy" aria-label="隐私与设置">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.83 2.83-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.03 1.55V21h-4v-.08A1.7 1.7 0 0 0 9 19.37a1.7 1.7 0 0 0-1.88.34l-.06.06-2.83-2.83.06-.06A1.7 1.7 0 0 0 4.63 15a1.7 1.7 0 0 0-1.55-1.03H3v-4h.08A1.7 1.7 0 0 0 4.63 9a1.7 1.7 0 0 0-.34-1.88l-.06-.06 2.83-2.83.06.06A1.7 1.7 0 0 0 9 4.63a1.7 1.7 0 0 0 1.03-1.55V3h4v.08A1.7 1.7 0 0 0 15 4.63a1.7 1.7 0 0 0 1.88-.34l.06-.06 2.83 2.83-.06.06A1.7 1.7 0 0 0 19.37 9a1.7 1.7 0 0 0 1.55 1.03H21v4h-.08A1.7 1.7 0 0 0 19.4 15Z"/></svg>
+      </button>
+    </header>
+
+    <main id="app" tabindex="-1"></main>
+
+    <nav class="bottom-nav" aria-label="主要导航">
+      <button data-go="home" data-nav="home">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 11 9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-9Z"/></svg>
+        <span>此刻</span>
+      </button>
+      <button data-go="climate" data-nav="climate">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V9M10 19V5M16 19v-7M22 19V3"/></svg>
+        <span>气候</span>
+      </button>
+      <button data-go="privacy" data-nav="privacy">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg>
+        <span>我的</span>
+      </button>
+    </nav>
+  </div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
   <script>
-    const week=[['一',48],['二',65],['三',36],['四',72],['五',57],['六',84],['今',62]];document.querySelector('#week').innerHTML=week.map((d,i)=>`<div class="day ${i===6?'today':''}"><div class="bar" style="height:${d[1]}px"></div>${d[0]}</div>`).join('');
-    let mood='平静';document.querySelectorAll('.mood').forEach(b=>b.onclick=()=>{document.querySelectorAll('.mood').forEach(x=>x.classList.remove('active'));b.classList.add('active');mood=b.dataset.name});range.oninput=()=>level.textContent=range.value;
-    save.onclick=()=>{localStorage.setItem('xinyu-entry',JSON.stringify({mood,level:range.value,note:note.value,time:new Date().toISOString()}));insight.classList.add('show');insight.scrollIntoView({behavior:'smooth',block:'center'})};
-    let timer;breathe.onclick=()=>{modal.classList.add('show');let inhale=true;breathText.textContent='慢慢吸气';timer=setInterval(()=>{inhale=!inhale;breathText.textContent=inhale?'慢慢吸气':'轻轻呼气'},4000)};close.onclick=()=>{modal.classList.remove('show');clearInterval(timer)};
-  </script>
+const STORAGE_KEY = 'xinyu.entries.v1';
+
+function getSafeStorage(globalObject) {
+  try {
+    return globalObject?.localStorage || null;
+  } catch {
+    return null;
+  }
+}
+
+const riskPatterns = [
+  /(?:我)?想(?:要)?死/,
+  /不想活(?:了|着|下去)?/,
+  /想(?:要)?(?:自杀|轻生|结束生命)/,
+  /(?:要|想|准备)(?:去)?跳楼/,
+  /(?:要|想|准备)(?:去)?杀人/,
+  /(?:结束|了结)(?:我)?自己(?:的)?生命/,
+  /(?:伤害|杀死|弄死)(?:我自己|自己|别人|他人)/,
+  /活着没意思/,
+  /从(?:楼|这里)跳下去/,
+  /割腕|服药自杀/
+];
+
+function detectRisk(text = '') {
+  const normalized = String(text).replace(/\s+/g, '');
+  return riskPatterns.some(pattern => pattern.test(normalized));
+}
+
+const triggerCopy = {
+  学业: { event: '学习或公开表达带来了压力', thought: '担心准备不够，表现达不到期待', needs: ['确定感', '准备感'] },
+  工作: { event: '工作任务或评价正在占据你的注意力', thought: '担心表现不好，或无法掌控接下来的情况', needs: ['掌控感', '被认可'] },
+  人际: { event: '一段人际互动让你感到不舒服', thought: '担心自己没有被理解，或关系会发生变化', needs: ['被理解', '连接感'] },
+  家庭: { event: '家庭中的互动触动了你', thought: '也许你在顾及他人时，忽略了自己的感受', needs: ['边界感', '被支持'] },
+  感情: { event: '亲密关系中的不确定感被放大了', thought: '担心失去连接，或自己的需要不被回应', needs: ['安全感', '被回应'] },
+  身体: { event: '身体状态正在影响此刻的情绪', thought: '不舒服或疲惫让应对事情变得更困难', needs: ['休息', '身体安定'] },
+  经济: { event: '现实的经济压力让你感到紧绷', thought: '担心资源不足，未来缺少确定性', needs: ['安全感', '可执行计划'] },
+  不知道: { event: '情绪已经出现，但原因暂时还不清晰', thought: '不需要马上找到答案，可以先陪自己停一会儿', needs: ['空间', '被接纳'] }
+};
+
+function analyzeEntry({ mood = '复杂', trigger = '不知道', note = '' }) {
+  const base = triggerCopy[trigger] || triggerCopy.不知道;
+  const publicSpeaking = /答辩|汇报|演讲|面试|发言|讲砸/.test(note);
+  const conflict = /吵架|争吵|不回|冷战|误会|打断/.test(note);
+  const deadline = /截止|来不及|ddl|明天|今晚|赶不完/.test(note.toLowerCase());
+  let event = base.event;
+  let thought = base.thought;
+  let needs = [...base.needs];
+
+  if (publicSpeaking) {
+    event = '一次临近的答辩或公开表达正在带来压力';
+    thought = '担心准备不充分、现场表现不好，或受到负面评价';
+    needs = ['确定感', '准备感'];
+  } else if (conflict) {
+    event = '一段没有顺利进行的互动仍在影响你';
+    thought = '也许你在担心自己没有被听见，或关系因此受损';
+    needs = ['被理解', '关系中的安全感'];
+  } else if (deadline) {
+    event = '临近的截止时间让任务显得格外沉重';
+    thought = '担心时间不够，无法把事情做到期待的程度';
+    needs = ['清晰的下一步', '喘息空间'];
+  }
+
+  const secondary = mood === '焦虑' ? '紧张' : mood === '低落' ? '无力' : mood === '生气' ? '委屈' : '复杂';
+  return {
+    event,
+    thought,
+    emotions: [...new Set([mood, secondary])],
+    needs
+  };
+}
+
+function chooseExercise({ trigger, minutes, place, energy }) {
+  if (place === '准备睡觉' || trigger === '身体') {
+    return { type: 'breathe', title: '柔和呼吸', duration: minutes === 1 ? 60 : 90, reason: '先让身体慢下来，不急着解决所有问题。' };
+  }
+  if ((trigger === '工作' || trigger === '学业' || trigger === '经济') && energy !== '低') {
+    return { type: 'plan', title: '三分钟最小行动', duration: 0, reason: '把无法掌控的担心，缩小成一个现在能完成的动作。' };
+  }
+  return { type: 'ground', title: '感官落地练习', duration: 0, reason: '把注意力从反复的念头，温和地带回此刻。' };
+}
+
+function readEntries(storage) {
+  try {
+    const raw = storage?.getItem(STORAGE_KEY);
+    if (raw === null) return { mode: 'writable', entries: [] };
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) throw new Error('not-array');
+    return { mode: 'writable', entries: parsed.map(normalizeEntry).filter(Boolean) };
+  } catch {
+    return { mode: 'readonly', entries: [] };
+  }
+}
+
+const allowedMoods = new Set(['开心', '平静', '疲惫', '焦虑', '低落', '生气']);
+const allowedTriggers = new Set(['学业', '工作', '人际', '家庭', '感情', '身体', '经济', '不知道']);
+const allowedCare = new Set(['breathe', 'ground', 'plan', 'skipped']);
+
+function normalizeEntry(item) {
+  if (!item || typeof item !== 'object') return null;
+  if (typeof item.id !== 'string' || item.id.length < 1 || item.id.length > 120) return null;
+  if (typeof item.createdAt !== 'string' || !Number.isFinite(Date.parse(item.createdAt))) return null;
+  if (!allowedMoods.has(item.mood) || !allowedTriggers.has(item.trigger)) return null;
+  const before = Number(item.before);
+  const after = Number(item.after);
+  if (!Number.isInteger(before) || before < 1 || before > 10) return null;
+  if (!Number.isInteger(after) || after < 1 || after > 10) return null;
+  if (!allowedCare.has(item.careType)) return null;
+  return {
+    id: item.id,
+    source: 'user',
+    createdAt: new Date(item.createdAt).toISOString(),
+    mood: item.mood,
+    trigger: item.trigger,
+    before,
+    after,
+    careType: item.careType
+  };
+}
+
+function saveEntryIdempotently(storage, entry) {
+  const safeEntry = normalizeEntry(entry);
+  if (!safeEntry) return { status: 'invalid', entries: [] };
+  const current = readEntries(storage);
+  if (current.mode !== 'writable') return { status: 'readonly', entries: current.entries };
+  if (current.entries.some(item => item.id === safeEntry.id)) return { status: 'duplicate', entries: current.entries };
+  const entries = [safeEntry, ...current.entries];
+  try {
+    storage.setItem(STORAGE_KEY, JSON.stringify(entries));
+    return { status: 'saved', entries };
+  } catch {
+    return { status: 'failed', entries: current.entries };
+  }
+}
+
+function summarizeEntries(entries = []) {
+  const personal = entries.filter(item => item.source === 'user');
+  const triggerCounts = new Map();
+  const careGains = new Map();
+  entries.forEach(item => {
+    if (item.trigger) triggerCounts.set(item.trigger, (triggerCounts.get(item.trigger) || 0) + 1);
+    if (item.careType && Number.isFinite(item.before) && Number.isFinite(item.after)) {
+      const previous = careGains.get(item.careType) || { total: 0, count: 0 };
+      careGains.set(item.careType, { total: previous.total + Math.max(0, item.before - item.after), count: previous.count + 1 });
+    }
+  });
+  const topTrigger = [...triggerCounts].sort((a, b) => b[1] - a[1])[0]?.[0] || '暂未发现';
+  const bestCare = [...careGains]
+    .map(([type, value]) => [type, value.total / value.count])
+    .sort((a, b) => b[1] - a[1])[0]?.[0] || '暂无';
+  return { personalCount: personal.length, topTrigger, bestCare };
+}
+
+const app = document.querySelector('#app');
+const toast = document.querySelector('#toast');
+const moods = [
+  ['开心', '☀️'], ['平静', '🌙'], ['疲惫', '🌫️'],
+  ['焦虑', '🌧️'], ['低落', '☁️'], ['生气', '⛈️']
+];
+const triggers = ['学业', '工作', '人际', '家庭', '感情', '身体', '经济', '不知道'];
+const careNames = { breathe: '柔和呼吸', ground: '感官落地', plan: '最小行动' };
+const moodEmoji = Object.fromEntries(moods);
+const moodWeather = {
+  开心: ['有光落在岛上', '此刻的轻盈，也值得被好好记住。'],
+  平静: ['海面很安静', '不需要发生什么，也可以只是待一会儿。'],
+  疲惫: ['岛上起了薄雾', '也许你需要的不是坚持，而是一点空间。'],
+  焦虑: ['细雨正在经过', '先不用赶走它，我们一起看看它带来了什么。'],
+  低落: ['云层有些低', '今天不必表现得很好，能照顾自己一点就够了。'],
+  生气: ['远处有闷雷', '愤怒常常在保护某个重要的需要。']
+};
+
+const isoDaysAgo = days => {
+  const date = new Date();
+  date.setHours(20, 0, 0, 0);
+  date.setDate(date.getDate() - days);
+  return date.toISOString();
+};
+
+const sampleEntries = [
+  { id: 'sample-5', source: 'sample', createdAt: isoDaysAgo(6), mood: '平静', trigger: '身体', before: 4, after: 3, careType: 'breathe' },
+  { id: 'sample-4', source: 'sample', createdAt: isoDaysAgo(5), mood: '焦虑', trigger: '学业', before: 8, after: 5, careType: 'plan' },
+  { id: 'sample-3', source: 'sample', createdAt: isoDaysAgo(3), mood: '疲惫', trigger: '工作', before: 7, after: 5, careType: 'ground' },
+  { id: 'sample-2', source: 'sample', createdAt: isoDaysAgo(2), mood: '低落', trigger: '人际', before: 6, after: 5, careType: 'ground' },
+  { id: 'sample-1', source: 'sample', createdAt: isoDaysAgo(1), mood: '焦虑', trigger: '工作', before: 7, after: 4, careType: 'plan' }
+];
+
+const storage = getSafeStorage(window);
+let persisted = readEntries(storage);
+let userEntries = persisted.entries.map(item => ({ ...item, source: 'user' }));
+let view = 'home';
+let checkinStep = 1;
+let exerciseInterval = null;
+let exerciseDeadline = null;
+let analysisTimer = null;
+let toastTimer = null;
+let draft = freshDraft();
+
+function freshDraft() {
+  return {
+    id: globalThis.crypto?.randomUUID?.() || `entry-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+    mood: '',
+    intensity: 6,
+    trigger: '',
+    note: '',
+    insight: null,
+    minutes: 3,
+    place: '独处',
+    energy: '中',
+    exercise: null,
+    after: 4,
+    saved: false
+  };
+}
+
+function allEntries() {
+  return [...userEntries, ...sampleEntries].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+}
+
+function clearExerciseTimer() {
+  if (exerciseInterval) clearInterval(exerciseInterval);
+  exerciseInterval = null;
+  exerciseDeadline = null;
+}
+
+function pauseExerciseTimer() {
+  if (exerciseInterval) clearInterval(exerciseInterval);
+  exerciseInterval = null;
+}
+
+function go(next) {
+  const allowed = ['home', 'checkin', 'loading', 'insight', 'care', 'exercise', 'result', 'climate', 'privacy', 'safety'];
+  if (!allowed.includes(next)) next = 'home';
+  if (view === 'exercise' && next !== 'exercise') clearExerciseTimer();
+  if (view === 'loading' && next !== 'loading' && analysisTimer) clearTimeout(analysisTimer);
+  view = next;
+  render();
+  app.focus({ preventScroll: true });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function notify(message) {
+  clearTimeout(toastTimer);
+  toast.textContent = message;
+  toast.classList.add('show');
+  toastTimer = setTimeout(() => toast.classList.remove('show'), 2600);
+}
+
+function render() {
+  document.querySelectorAll('[data-nav]').forEach(button => {
+    button.classList.toggle('active', button.dataset.nav === view || (view === 'checkin' && button.dataset.nav === 'home'));
+  });
+  const screens = {
+    home: renderHome,
+    checkin: renderCheckin,
+    loading: renderLoading,
+    insight: renderInsight,
+    care: renderCare,
+    exercise: renderExercise,
+    result: renderResult,
+    climate: renderClimate,
+    privacy: renderPrivacy,
+    safety: renderSafety
+  };
+  app.innerHTML = screens[view]();
+  if (view === 'checkin' && checkinStep === 3) {
+    const note = document.querySelector('#note');
+    note.value = draft.note;
+    note.focus({ preventScroll: true });
+  }
+}
+
+function renderHome() {
+  const latest = userEntries[0];
+  const weather = latest ? moodWeather[latest.mood] : ['欢迎来到心屿', '这里没有需要表现好的地方，先听听自己。'];
+  const summary = summarizeEntries(userEntries.length ? userEntries : sampleEntries);
+  const personalText = summary.personalCount ? `${summary.personalCount} 次自己的记录` : '示例气候已准备好';
+  return `
+    <section class="screen">
+      <div class="hero-copy">
+        <p class="eyebrow">YOUR INNER WEATHER</p>
+        <h1>今天，心里<br>是什么天气？</h1>
+        <p>不急着变好。先把此刻放在这里，轻轻看清它。</p>
+      </div>
+      <article class="weather-card">
+        <div class="weather-meta">
+          <span class="weather-label"><i class="weather-dot"></i>${latest ? '最近一次记录' : '第一次来到岛上'}</span>
+          <span>${formatDay(new Date())}</span>
+        </div>
+        <div class="weather-main">
+          <strong>${weather[0]}</strong>
+          <p>${weather[1]}</p>
+        </div>
+        <div class="weather-footer">
+          <span class="weather-mini">约 3 分钟 · 仅保存在本机</span>
+          <button class="primary light" data-start>记录此刻</button>
+        </div>
+      </article>
+      <div class="section-head"><h3>你的近况</h3><button class="text-button" data-go="climate">查看气候</button></div>
+      <div class="mini-grid">
+        <article class="mini-card"><span>近 7 天</span><strong>${personalText}</strong></article>
+        <article class="mini-card"><span>常见触发</span><strong>${summary.topTrigger}</strong></article>
+      </div>
+      <div class="disclaimer">心屿提供一般性情绪记录与自助支持，不替代专业心理诊断或治疗。</div>
+    </section>`;
+}
+
+function stepper() {
+  return `<div class="stepper" aria-label="记录进度，第 ${checkinStep} 步，共 3 步"><span class="${checkinStep >= 1 ? 'active' : ''}"></span><span class="${checkinStep >= 2 ? 'active' : ''}"></span><span class="${checkinStep >= 3 ? 'active' : ''}"></span></div>`;
+}
+
+function renderCheckin() {
+  if (checkinStep === 1) {
+    return `<section class="screen">${stepper()}<p class="eyebrow">01 · 感受</p><h2>此刻最接近哪种天气？</h2><p class="prompt">没有标准答案，选一个最靠近的就好。</p>
+      <div class="choice-grid" role="group" aria-label="选择此刻情绪">${moods.map(([name, emoji]) => `<button class="choice ${draft.mood === name ? 'selected' : ''}" aria-pressed="${draft.mood === name}" data-mood="${name}"><span class="emoji">${emoji}</span><span>${name}</span></button>`).join('')}</div>
+      <div class="range-wrap"><div class="range-value"><strong id="intensity-display">${draft.intensity}</strong><span class="muted">/ 10 强度</span></div><input id="intensity" type="range" min="1" max="10" value="${draft.intensity}" aria-label="情绪强度"><div class="range-labels"><span>轻微</span><span>强烈</span></div></div>
+      <button class="primary full" data-next ${draft.mood ? '' : 'disabled'}>继续</button></section>`;
+  }
+  if (checkinStep === 2) {
+    return `<section class="screen">${stepper()}<p class="eyebrow">02 · 线索</p><h2>什么可能触发了它？</h2><p class="prompt">暂时不知道也完全没关系。</p>
+      <div class="choice-grid trigger-grid" role="group" aria-label="选择触发因素">${triggers.map(item => `<button class="choice ${draft.trigger === item ? 'selected' : ''}" aria-pressed="${draft.trigger === item}" data-trigger="${item}">${item}</button>`).join('')}</div>
+      <div class="button-row"><button class="secondary" data-back>上一步</button><button class="primary" data-next ${draft.trigger ? '' : 'disabled'}>继续</button></div></section>`;
+  }
+  return `<section class="screen">${stepper()}<p class="eyebrow">03 · 发生了什么</p><h2>愿意多说一点吗？</h2><p class="prompt">一句话就好。你也可以直接跳过。</p>
+    <textarea id="note" maxlength="280" placeholder="例如：明天要答辩，我怕自己讲砸……"></textarea>
+    <div class="suggestion-chips"><button data-suggestion="明天要答辩，我怕自己讲砸">试试答辩焦虑</button><button data-suggestion="和朋友说话时被打断了，我有点委屈">试试人际摩擦</button><button data-suggestion="最近很累，但不知道为什么">试试说不清的疲惫</button></div>
+    <div class="button-row"><button class="secondary" data-back>上一步</button><button class="primary" data-analyze>看看情绪想说什么</button></div></section>`;
+}
+
+function renderLoading() {
+  return `<section class="screen loading-copy"><div class="loading-orb" aria-hidden="true"></div><p class="eyebrow">AI 正在整理线索</p><h2>不评判，只是帮你看清</h2><p class="muted">把事件、想法、情绪和需要轻轻分开……</p></section>`;
+}
+
+function renderInsight() {
+  const i = draft.insight;
+  return `<section class="screen"><p class="eyebrow">AI 情绪镜子</p><h2>我听见的，可能是这些</h2><p class="prompt">这不是诊断。只有你最知道自己的感受，可以随时修改。</p>
+    <div class="insight-stack">
+      ${insightCard('◌', '发生的事', i.event)}
+      ${insightCard('↗', '脑海里的声音', i.thought)}
+      ${insightTags('≈', '可能的情绪', i.emotions)}
+      ${insightTags('♡', '此刻的需要', i.needs)}
+    </div>
+    <div class="button-row"><button class="secondary" data-edit>不太准确</button><button class="primary" data-accept>基本是这样</button></div>
+    <div class="disclaimer">AI 只根据你本次选择与文字做结构化整理，不会判断你“应该”有什么感受。</div></section>`;
+}
+
+function insightCard(icon, label, content) {
+  return `<article class="insight-card"><div class="insight-icon">${icon}</div><div><small>${label}</small><p>${content}</p></div></article>`;
+}
+
+function insightTags(icon, label, tags) {
+  return `<article class="insight-card"><div class="insight-icon">${icon}</div><div><small>${label}</small>${tags.map(tag => `<span class="tag">${tag}</span>`).join('')}</div></article>`;
+}
+
+function renderCare() {
+  return `<section class="screen"><p class="eyebrow">选择此刻能做到的</p><h2>给自己一个小小的照顾</h2><p class="prompt">我们会根据时间、环境和精力，只推荐一个动作。</p>
+    ${optionBlock('你有多少时间？', 'minutes', [1, 3, 10], draft.minutes, item => `${item} 分钟`)}
+    ${optionBlock('你现在在哪里？', 'place', ['公共场合', '独处', '准备睡觉'], draft.place)}
+    ${optionBlock('还剩多少精力？', 'energy', ['低', '中', '高'], draft.energy)}
+    <button class="primary full" data-recommend>为我推荐一个动作</button></section>`;
+}
+
+function optionBlock(label, key, items, selected, formatter = item => item) {
+  return `<div class="option-block"><label>${label}</label><div class="segmented" role="group" aria-label="${label}">${items.map(item => `<button class="${String(selected) === String(item) ? 'selected' : ''}" aria-pressed="${String(selected) === String(item)}" data-option="${key}" data-value="${item}">${formatter(item)}</button>`).join('')}</div></div>`;
+}
+
+function renderExercise() {
+  const ex = draft.exercise;
+  let body = '';
+  if (ex.type === 'breathe') {
+    body = `<div class="breath-stage"><div class="breath-circle"><div><strong id="breath-time">${ex.duration}</strong><span id="breath-cue">秒 · 准备好后开始</span></div></div></div><button class="primary light full" data-breathe-start>开始柔和呼吸</button>`;
+  } else if (ex.type === 'ground') {
+    body = `<div class="exercise-list">${['看见一种柔和的颜色', '感受双脚与地面的接触', '听见一个近处的声音', '慢慢呼出一口气'].map((text, index) => `<label class="exercise-step"><input type="checkbox" data-ex-step><span>${index + 1}. ${text}</span></label>`).join('')}</div><button class="primary light full" data-ex-complete>我回到此刻了</button>`;
+  } else {
+    const action = draft.trigger === '学业' ? '写下最可能被问到的一个问题' : draft.trigger === '经济' ? '列出一个今天能确认的数字或信息' : '写下下一步最小、最具体的动作';
+    body = `<div class="exercise-list"><label class="exercise-step"><input type="checkbox" data-ex-step><span>1. ${action}</span></label><label class="exercise-step"><input type="checkbox" data-ex-step><span>2. 只做它，不处理整件事</span></label><label class="exercise-step"><input type="checkbox" data-ex-step><span>3. 做完后允许自己停下来</span></label></div><button class="primary light full" data-ex-complete>这个动作已经足够小</button>`;
+  }
+  return `<section class="screen"><article class="exercise-hero"><p class="eyebrow">为此刻推荐</p><h2>${ex.title}</h2><p>${ex.reason}</p>${body}</article><button class="text-button full" style="margin-top:18px" data-skip>暂时不做，直接记录变化</button></section>`;
+}
+
+function renderResult() {
+  const delta = draft.intensity - draft.after;
+  const message = delta > 0 ? `轻了 ${delta} 格` : delta === 0 ? '没有变化也没关系' : '情绪变强了，也值得被看见';
+  return `<section class="screen center"><p class="eyebrow">完成一次照顾</p><div class="result-orb"><strong id="result-delta">${delta > 0 ? `−${delta}` : delta === 0 ? '≈' : `+${Math.abs(delta)}`}</strong></div><h2 id="result-title">${message}</h2><p class="muted">调节不是消灭情绪，而是多一点选择。</p>
+    <div class="panel" style="text-align:left;margin-top:24px"><div class="range-value"><strong id="after-value">${draft.after}</strong><span class="muted">/ 10 现在的强度</span></div><input id="after" type="range" min="1" max="10" value="${draft.after}" aria-label="调节后的情绪强度"><div class="range-labels"><span>轻微</span><span>强烈</span></div></div>
+    <button class="primary full" style="margin-top:18px" data-save ${draft.saved ? 'disabled' : ''}>${draft.saved ? '已经保存' : '保存，并看看我的气候'}</button></section>`;
+}
+
+function renderClimate() {
+  const entries = allEntries().slice(0, 7).reverse();
+  const summary = summarizeEntries(userEntries.length ? userEntries : sampleEntries);
+  const points = chartPoints(entries);
+  return `<section class="screen"><p class="eyebrow">INNER CLIMATE</p><h1>你的内心气候</h1><p class="prompt">规律不是结论，只是值得继续观察的线索。</p>
+    <article class="chart-card"><div class="chart-head"><div><small style="color:rgba(255,255,255,.65)">最近 7 次记录</small><h2 style="margin-top:4px">情绪强度变化</h2></div><span class="chart-badge">含示例数据</span></div>
+      <svg class="chart" viewBox="0 0 330 170" role="img" aria-label="最近七次情绪强度趋势图"><defs><linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f5cdb1" stop-opacity=".38"/><stop offset="1" stop-color="#f5cdb1" stop-opacity="0"/></linearGradient></defs><line class="grid" x1="16" x2="314" y1="45" y2="45"/><line class="grid" x1="16" x2="314" y1="90" y2="90"/><line class="grid" x1="16" x2="314" y1="135" y2="135"/><path class="area" d="${points.area}"/><path class="line" d="${points.line}"/>${points.circles}${points.labels}</svg>
+    </article>
+    <div class="section-head"><h3>${userEntries.length ? '正在浮现的线索' : '示例观察'}</h3></div>
+    <div class="mini-grid"><article class="mini-card"><span>高频触发</span><strong>${summary.topTrigger}</strong></article><article class="mini-card"><span>更适合你的方式</span><strong>${careNames[summary.bestCare] || '继续观察'}</strong></article></div>
+    <div class="section-head"><h3>记录</h3><span class="small muted">${summary.personalCount} 条我的记录</span></div>
+    <div class="history-list">${allEntries().slice(0, 6).map(renderHistory).join('')}</div>
+    ${summary.personalCount === 0 ? '<div class="disclaimer">目前展示的是体验用示例气候。完成一次记录后，你的数据会以“我的”标识出现。</div>' : ''}
+  </section>`;
+}
+
+function chartPoints(entries) {
+  const values = entries.length ? entries : sampleEntries;
+  const xStep = values.length > 1 ? 290 / (values.length - 1) : 0;
+  const coords = values.map((item, index) => ({ x: 20 + index * xStep, y: 148 - ((Number(item.after ?? item.before) - 1) / 9) * 112, item }));
+  const line = coords.map((p, i) => `${i ? 'L' : 'M'} ${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(' ');
+  const area = `${line} L ${coords.at(-1).x.toFixed(1)} 155 L ${coords[0].x.toFixed(1)} 155 Z`;
+  const circles = coords.map(p => `<circle class="point" cx="${p.x}" cy="${p.y}" r="5"/>`).join('');
+  const labels = coords.map(p => `<text x="${p.x}" y="168" text-anchor="middle">${new Date(p.item.createdAt).getMonth() + 1}/${new Date(p.item.createdAt).getDate()}</text>`).join('');
+  return { line, area, circles, labels };
+}
+
+function renderHistory(item) {
+  const date = new Date(item.createdAt);
+  return `<article class="history-card"><div class="history-weather">${moodEmoji[item.mood] || '◌'}</div><div><strong>${item.mood} · ${item.trigger}</strong><p>${date.getMonth() + 1}月${date.getDate()}日 · ${item.before} → ${item.after ?? item.before}</p></div><span class="source-label ${item.source === 'user' ? 'mine' : ''}">${item.source === 'user' ? '我的' : '示例'}</span></article>`;
+}
+
+function renderPrivacy() {
+  const writable = persisted.mode === 'writable';
+  return `<section class="screen"><p class="eyebrow">PRIVACY BY DEFAULT</p><h1>你的岛，属于你</h1><p class="prompt">记录只留在这个浏览器中。没有账号，没有上传，也没有广告追踪。</p>
+    <article class="panel"><div class="privacy-row"><div><strong>本地保存</strong><p>刷新后仍可看到，换设备不会同步</p></div><span class="status-pill">${writable ? '已开启' : '只读保护'}</span></div><div class="privacy-row"><div><strong>网络传输</strong><p>情绪文字不会发送到服务器</p></div><span class="status-pill">无</span></div><div class="privacy-row"><div><strong>示例数据</strong><p>始终标注“示例”，不混作你的记录</p></div><span class="status-pill">5 条</span></div></article>
+    <div class="section-head"><h3>管理数据</h3></div><div class="button-row"><button class="soft-button" data-export>导出我的记录</button><button class="danger-button" data-clear>清除我的记录</button></div>
+    <div class="section-head"><h3>安全支持</h3></div><article class="panel"><p style="margin-top:0">如果情绪已经超出独自承受的范围，可以联系可信任的人或专业支持。</p><button class="secondary full" data-go="safety">查看援助方式</button></article>
+    <div class="disclaimer">心屿不是医疗产品，不提供心理诊断、治疗建议或紧急救援。</div></section>`;
+}
+
+function renderSafety() {
+  return `<section class="screen"><article class="safety-card"><div class="safety-symbol">♡</div><p class="eyebrow" style="margin-top:20px;color:#8b4747">你不必独自扛着</p><h2>现在，先和一个真实的人建立联系</h2><p class="muted">如果你正考虑伤害自己或他人，或处于即时危险中，请离开危险物品和地点，联系身边可信任的人，并尽快寻求专业或紧急帮助。</p>
+    <div class="hotline"><span>全国统一心理援助热线（中国大陆）</span><a href="tel:12356">12356</a></div>
+    <p class="small muted">如果存在即时人身危险，请联系当地紧急服务。心屿无法提供紧急救援。</p>
+    <div class="button-row"><button class="secondary" data-risk-edit>这不是我的意思</button><button class="primary" data-risk-exit>返回首页</button></div></article></section>`;
+}
+
+function formatDay(date) {
+  return `${date.getMonth() + 1}月${date.getDate()}日`;
+}
+
+function startBreathing() {
+  if (exerciseInterval) return;
+  const seconds = draft.exercise.duration;
+  exerciseDeadline = Date.now() + seconds * 1000;
+  const button = document.querySelector('[data-breathe-start]');
+  if (button) { button.disabled = true; button.textContent = '跟着圆圈，慢慢呼吸'; }
+  tickBreathing();
+  exerciseInterval = setInterval(tickBreathing, 250);
+}
+
+function tickBreathing() {
+    if (!exerciseDeadline || view !== 'exercise' || document.hidden) return;
+    const remaining = Math.max(0, Math.ceil((exerciseDeadline - Date.now()) / 1000));
+    const time = document.querySelector('#breath-time');
+    const cue = document.querySelector('#breath-cue');
+    if (time) time.textContent = remaining;
+    if (cue) cue.textContent = `${remaining % 8 > 4 ? '慢慢呼气' : '轻轻吸气'}`;
+    if (remaining <= 0) {
+      clearExerciseTimer();
+      draft.after = Math.max(1, draft.intensity - 2);
+      go('result');
+    }
+}
+
+function finishExercise() {
+  draft.after = Math.max(1, draft.intensity - 2);
+  go('result');
+}
+
+function saveDraft() {
+  if (draft.saved) return;
+  draft.saved = true;
+  const entry = {
+    id: draft.id,
+    source: 'user',
+    createdAt: new Date().toISOString(),
+    mood: draft.mood,
+    trigger: draft.trigger,
+    before: draft.intensity,
+    after: draft.after,
+    careType: draft.exercise?.type || 'skipped',
+    insight: draft.insight
+  };
+  const result = saveEntryIdempotently(storage, entry);
+  if (!userEntries.some(item => item.id === entry.id)) userEntries.unshift(entry);
+  if (result.status === 'failed' || result.status === 'readonly') notify('浏览器未能保存，这次结果仅在当前页面有效');
+  persisted = readEntries(storage);
+  go('climate');
+}
+
+function clearPersonalData() {
+  if (!window.confirm('确认清除这个浏览器中的所有个人记录吗？示例数据会保留。')) return;
+  try {
+    if (!storage) throw new Error('storage-unavailable');
+    storage.removeItem(STORAGE_KEY);
+    if (storage.getItem(STORAGE_KEY) !== null) throw new Error('not-cleared');
+    userEntries = [];
+    persisted = readEntries(storage);
+    notify('个人记录已从这个浏览器清除');
+    render();
+  } catch {
+    notify('未能清除，请检查浏览器存储权限');
+  }
+}
+
+function exportPersonalData() {
+  if (!userEntries.length) return notify('还没有可以导出的个人记录');
+  const blob = new Blob([JSON.stringify(userEntries, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `心屿记录-${new Date().toISOString().slice(0, 10)}.json`;
+  link.click();
+  setTimeout(() => URL.revokeObjectURL(url), 500);
+}
+
+document.addEventListener('click', event => {
+  const target = event.target.closest('button, [data-go]');
+  if (!target) return;
+  if (target.dataset.go) return go(target.dataset.go);
+  if (target.hasAttribute('data-start')) { draft = freshDraft(); checkinStep = 1; return go('checkin'); }
+  if (target.dataset.mood) { draft.mood = target.dataset.mood; return render(); }
+  if (target.dataset.trigger) { draft.trigger = target.dataset.trigger; return render(); }
+  if (target.hasAttribute('data-next')) { checkinStep = Math.min(3, checkinStep + 1); return render(); }
+  if (target.hasAttribute('data-back')) { checkinStep = Math.max(1, checkinStep - 1); return render(); }
+  if (target.dataset.suggestion) { draft.note = target.dataset.suggestion; const note = document.querySelector('#note'); if (note) note.value = draft.note; return; }
+  if (target.hasAttribute('data-analyze')) {
+    if (detectRisk(draft.note)) return go('safety');
+    draft.insight = analyzeEntry(draft);
+    go('loading');
+    analysisTimer = setTimeout(() => go('insight'), 850);
+    return;
+  }
+  if (target.hasAttribute('data-edit')) { checkinStep = 3; return go('checkin'); }
+  if (target.hasAttribute('data-accept')) return go('care');
+  if (target.dataset.option) { draft[target.dataset.option] = target.dataset.option === 'minutes' ? Number(target.dataset.value) : target.dataset.value; return render(); }
+  if (target.hasAttribute('data-recommend')) { draft.exercise = chooseExercise(draft); return go('exercise'); }
+  if (target.hasAttribute('data-breathe-start')) return startBreathing();
+  if (target.hasAttribute('data-ex-complete') || target.hasAttribute('data-skip')) return finishExercise();
+  if (target.hasAttribute('data-save')) return saveDraft();
+  if (target.hasAttribute('data-clear')) return clearPersonalData();
+  if (target.hasAttribute('data-export')) return exportPersonalData();
+  if (target.hasAttribute('data-risk-edit')) { checkinStep = 3; return go('checkin'); }
+  if (target.hasAttribute('data-risk-exit')) { draft = freshDraft(); return go('home'); }
+});
+
+document.addEventListener('input', event => {
+  if (event.target.id === 'intensity') {
+    draft.intensity = Number(event.target.value);
+    const output = document.querySelector('#intensity-display');
+    if (output) output.textContent = draft.intensity;
+  }
+  if (event.target.id === 'note') draft.note = event.target.value;
+  if (event.target.id === 'after') {
+    draft.after = Number(event.target.value);
+    const output = document.querySelector('#after-value');
+    if (output) output.textContent = draft.after;
+    updateResultFeedback();
+  }
+});
+
+function updateResultFeedback() {
+  const delta = draft.intensity - draft.after;
+  const deltaNode = document.querySelector('#result-delta');
+  const titleNode = document.querySelector('#result-title');
+  if (deltaNode) deltaNode.textContent = delta > 0 ? `−${delta}` : delta === 0 ? '≈' : `+${Math.abs(delta)}`;
+  if (titleNode) titleNode.textContent = delta > 0 ? `轻了 ${delta} 格` : delta === 0 ? '没有变化也没关系' : '情绪变强了，也值得被看见';
+}
+
+document.addEventListener('change', event => {
+  if (event.target.matches('[data-ex-step]')) {
+    const boxes = [...document.querySelectorAll('[data-ex-step]')];
+    const button = document.querySelector('[data-ex-complete]');
+    if (button) button.textContent = boxes.every(box => box.checked) ? '完成了，记录变化' : '这个动作已经足够小';
+  }
+});
+
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    pauseExerciseTimer();
+  } else if (exerciseDeadline && view === 'exercise') {
+    const remaining = Math.max(0, Math.ceil((exerciseDeadline - Date.now()) / 1000));
+    if (remaining <= 0) {
+      finishExercise();
+    } else if (!exerciseInterval) {
+      tickBreathing();
+      exerciseInterval = setInterval(tickBreathing, 250);
+    }
+  }
+});
+
+if (persisted.mode === 'readonly') setTimeout(() => notify('检测到无法读取的旧数据，已进入只读保护模式'), 500);
+render();
+
+</script>
 </body>
 </html>
