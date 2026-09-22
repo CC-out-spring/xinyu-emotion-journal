@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#f5f1ed">
   <meta name="description" content="心屿：把情绪变成可以理解和照顾的天气。">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x2='1' y2='1'%3E%3Cstop stop-color='%236f63a9'/%3E%3Cstop offset='1' stop-color='%23c18fa1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='32' cy='32' r='28' fill='url(%23g)'/%3E%3Cpath d='M34 15a18 18 0 1 0 0 34c-8-4-11-11-11-17s3-13 11-17Z' fill='white' fill-opacity='.92'/%3E%3C/svg%3E">
   <title>心屿 · 情绪天气台</title>
   <style>
 :root {
@@ -20,6 +21,9 @@
   --sage: #a9bba4;
   --danger: #a94d4d;
   --shadow: 0 18px 50px rgba(78, 61, 50, .11);
+  --page-gutter: clamp(18px, 5vw, 28px);
+  --nav-height: 62px;
+  --nav-gap: 12px;
 }
 
 * { box-sizing: border-box; }
@@ -56,7 +60,7 @@ button:focus-visible, textarea:focus-visible, input:focus-visible {
 .ambient-b { width: 180px; height: 180px; bottom: 5%; left: -100px; background: rgba(236, 184, 144, .24); }
 
 .app-shell {
-  width: min(100%, 560px);
+  width: min(100%, 620px);
   min-height: 100vh;
   margin: 0 auto;
   position: relative;
@@ -65,8 +69,8 @@ button:focus-visible, textarea:focus-visible, input:focus-visible {
 }
 
 .topbar {
-  height: 72px;
-  padding: max(12px, env(safe-area-inset-top)) 20px 8px;
+  min-height: 60px;
+  padding: max(6px, env(safe-area-inset-top)) var(--page-gutter) 4px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -82,28 +86,32 @@ button:focus-visible, textarea:focus-visible, input:focus-visible {
 .icon-button { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line); background: rgba(255,255,255,.5); display: grid; place-items: center; cursor: pointer; }
 .icon-button svg, .bottom-nav svg { width: 21px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
 
-#app { flex: 1; padding: 12px 20px 110px; }
+#app {
+  flex: 1;
+  padding: 6px var(--page-gutter) calc(var(--nav-height) + var(--nav-gap) * 2 + env(safe-area-inset-bottom));
+  scroll-padding-bottom: calc(var(--nav-height) + 28px);
+}
 .screen { animation: screen-in .35s cubic-bezier(.2,.8,.2,1); }
 @keyframes screen-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 
 .eyebrow { margin: 0 0 8px; color: var(--purple-dark); font-size: 12px; font-weight: 760; letter-spacing: .16em; text-transform: uppercase; }
-h1 { margin: 0; font-size: clamp(30px, 8vw, 42px); line-height: 1.12; letter-spacing: -.04em; }
+h1 { margin: 0; font-size: clamp(30px, 7.5vw, 40px); line-height: 1.1; letter-spacing: -.04em; }
 h2 { margin: 0; font-size: 24px; line-height: 1.25; letter-spacing: -.025em; }
 h3 { margin: 0; font-size: 17px; }
 p { line-height: 1.65; }
 .muted { color: var(--muted); }
 .small { font-size: 13px; }
-.section-head { display: flex; justify-content: space-between; align-items: end; gap: 12px; margin: 28px 2px 13px; }
+.section-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin: 14px 2px 8px; }
 .section-head a, .text-button { min-height: 44px; padding: 10px 8px; border: 0; background: transparent; color: var(--purple-dark); font-weight: 650; cursor: pointer; text-decoration: none; }
 
-.hero-copy { margin-top: 7px; max-width: 430px; }
-.hero-copy p { color: var(--muted); margin: 12px 0 0; }
+.hero-copy { margin-top: 2px; max-width: 460px; }
+.hero-copy p { color: var(--muted); margin: 7px 0 0; }
 
 .weather-card {
-  min-height: 295px;
-  margin-top: 24px;
-  padding: 26px;
-  border-radius: 32px;
+  min-height: 232px;
+  margin-top: 14px;
+  padding: 20px 22px;
+  border-radius: 29px;
   color: #fff;
   position: relative;
   overflow: hidden;
@@ -118,10 +126,10 @@ p { line-height: 1.65; }
 .weather-meta { display: flex; align-items: center; justify-content: space-between; font-size: 13px; color: rgba(255,255,255,.75); }
 .weather-label { display: inline-flex; gap: 7px; align-items: center; }
 .weather-dot { width: 7px; height: 7px; border-radius: 50%; background: #f5d1b3; box-shadow: 0 0 0 5px rgba(245,209,179,.14); }
-.weather-main { margin-top: 43px; }
-.weather-main strong { display: block; font-size: 38px; letter-spacing: -.05em; }
-.weather-main p { margin: 7px 0 0; max-width: 310px; color: rgba(255,255,255,.78); }
-.weather-footer { position: absolute; left: 26px; right: 26px; bottom: 25px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.weather-main { margin-top: 20px; }
+.weather-main strong { display: block; font-size: clamp(30px, 7vw, 36px); letter-spacing: -.05em; }
+.weather-main p { margin: 5px 0 0; max-width: 310px; color: rgba(255,255,255,.78); line-height: 1.5; }
+.weather-footer { position: absolute; left: 22px; right: 22px; bottom: 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .weather-mini { font-size: 12px; color: rgba(255,255,255,.68); }
 
 .primary, .secondary, .soft-button, .danger-button {
@@ -155,6 +163,33 @@ button:disabled { opacity: .45; cursor: not-allowed; transform: none !important;
 .mini-card span { display: block; color: var(--muted); font-size: 12px; margin-bottom: 10px; }
 .mini-card strong { font-size: 17px; }
 .panel { border-radius: 26px; padding: 22px; }
+
+.journey-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-top: 14px;
+  padding: 9px 12px;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: rgba(255,255,255,.5);
+}
+.journey-step { min-width: 0; text-align: center; color: var(--muted); font-size: 11px; }
+.journey-step strong { display: block; margin-bottom: 3px; color: var(--ink); font-size: 13px; }
+.journey-step + .journey-step { border-left: 1px solid var(--line); }
+
+.empty-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  border-radius: 21px;
+  background: rgba(255,255,255,.58);
+}
+.empty-card p { margin: 3px 0 0; color: var(--muted); font-size: 12px; line-height: 1.5; }
+.empty-card .soft-button { flex: 0 0 auto; min-height: 44px; padding: 10px 14px; }
 
 .stepper { display: flex; gap: 7px; margin: 4px 0 26px; }
 .stepper span { height: 4px; flex: 1; border-radius: 99px; background: rgba(39,36,31,.1); }
@@ -248,11 +283,11 @@ textarea { width: 100%; min-height: 132px; resize: vertical; border: 1px solid v
 .bottom-nav {
   position: fixed;
   z-index: 30;
-  bottom: 12px;
+  bottom: max(var(--nav-gap), env(safe-area-inset-bottom));
   left: 50%;
   transform: translateX(-50%);
-  width: min(calc(100% - 28px), 520px);
-  min-height: 68px;
+  width: min(calc(100% - 28px), 588px);
+  min-height: var(--nav-height);
   padding: 7px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -262,16 +297,32 @@ textarea { width: 100%; min-height: 132px; resize: vertical; border: 1px solid v
   background: rgba(253,251,248,.82);
   box-shadow: 0 20px 50px rgba(59,48,43,.16);
   backdrop-filter: blur(22px);
+  transition: transform .22s ease, opacity .22s ease;
 }
 .bottom-nav button { min-height: 52px; display: flex; flex-direction: column; gap: 3px; align-items: center; justify-content: center; border: 0; border-radius: 17px; background: transparent; color: var(--muted); cursor: pointer; font-size: 10px; }
 .bottom-nav button.active { color: var(--purple-dark); background: rgba(217,211,237,.42); }
 
-.toast { position: fixed; z-index: 99; left: 50%; bottom: 96px; transform: translate(-50%, 16px); padding: 11px 16px; border-radius: 14px; background: rgba(39,36,31,.92); color: #fff; font-size: 12px; opacity: 0; pointer-events: none; transition: .25s ease; max-width: calc(100% - 40px); text-align: center; }
+.toast { position: fixed; z-index: 99; left: 50%; bottom: calc(var(--nav-height) + var(--nav-gap) * 2 + env(safe-area-inset-bottom)); transform: translate(-50%, 16px); padding: 11px 16px; border-radius: 14px; background: rgba(39,36,31,.92); color: #fff; font-size: 12px; opacity: 0; pointer-events: none; transition: .25s ease; max-width: calc(100% - 40px); text-align: center; }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
+body:has(textarea:focus) .bottom-nav {
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, calc(100% + var(--nav-gap) + env(safe-area-inset-bottom)));
+}
+
 @media (min-width: 760px) {
-  body::before { content: "把情绪变成\A可以理解和照顾的天气"; white-space: pre; position: fixed; left: max(30px, calc(50vw - 520px)); top: 20vh; width: 250px; color: rgba(39,36,31,.34); font-size: 18px; line-height: 1.55; letter-spacing: .06em; }
+  body::before { content: "把情绪变成\A可以理解和照顾的天气"; white-space: pre; position: fixed; left: max(24px, calc(50vw - 590px)); top: 22vh; width: 220px; color: rgba(39,36,31,.34); font-size: 17px; line-height: 1.55; letter-spacing: .06em; }
   .app-shell { border-left: 1px solid rgba(255,255,255,.65); border-right: 1px solid rgba(255,255,255,.65); background: rgba(247,243,238,.26); box-shadow: 0 0 80px rgba(74,60,52,.06); }
+  .topbar { min-height: 54px; }
+  #app { padding-top: 0; }
+  .hero-copy h1 { font-size: 36px; }
+  .hero-copy p { margin-top: 4px; }
+  .weather-card { min-height: 220px; margin-top: 10px; }
+  .weather-main { margin-top: 15px; }
+  .weather-main strong { font-size: 32px; }
+  .journey-strip { margin-top: 10px; padding-block: 7px; }
+  .section-head { margin-top: 10px; margin-bottom: 6px; }
 }
 
 @media (max-width: 380px) {
@@ -280,6 +331,11 @@ textarea { width: 100%; min-height: 132px; resize: vertical; border: 1px solid v
   .weather-card { padding: 21px; }
   .weather-footer { left: 21px; right: 21px; }
   .trigger-grid { grid-template-columns: repeat(3, 1fr); }
+  .weather-mini { max-width: 108px; }
+  .empty-card { align-items: flex-start; flex-direction: column; }
+  .empty-card .soft-button { width: 100%; }
+  .journey-strip { grid-template-columns: repeat(2, 1fr); row-gap: 10px; }
+  .journey-step:nth-child(3) { border-left: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -508,7 +564,9 @@ const sampleEntries = [
 
 const storage = getSafeStorage(window);
 let persisted = readEntries(storage);
+let storageWritable = persisted.mode === 'writable';
 let userEntries = persisted.entries.map(item => ({ ...item, source: 'user' }));
+let sessionEntries = [];
 let view = 'home';
 let checkinStep = 1;
 let exerciseInterval = null;
@@ -535,7 +593,7 @@ function freshDraft() {
 }
 
 function allEntries() {
-  return [...userEntries, ...sampleEntries].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  return [...userEntries, ...sessionEntries, ...sampleEntries].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 }
 
 function clearExerciseTimer() {
@@ -592,10 +650,19 @@ function render() {
 }
 
 function renderHome() {
-  const latest = userEntries[0];
+  const recordedEntries = [...userEntries, ...sessionEntries].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  const latest = recordedEntries[0];
   const weather = latest ? moodWeather[latest.mood] : ['欢迎来到心屿', '这里没有需要表现好的地方，先听听自己。'];
-  const summary = summarizeEntries(userEntries.length ? userEntries : sampleEntries);
-  const personalText = summary.personalCount ? `${summary.personalCount} 次自己的记录` : '示例气候已准备好';
+  const summary = summarizeEntries(recordedEntries);
+  const overview = recordedEntries.length
+    ? `<div class="mini-grid">
+        <article class="mini-card"><span>近 7 天</span><strong>${userEntries.length ? `${summary.personalCount} 次已保存${sessionEntries.length ? ` · ${sessionEntries.length} 条未保存` : ''}` : `${sessionEntries.length} 条未保存记录`}</strong></article>
+        <article class="mini-card"><span>常见触发</span><strong>${summary.topTrigger}</strong></article>
+      </div>`
+    : `<article class="empty-card">
+        <div><strong>完成第一次记录后生成</strong><p>这里会出现你的触发因素、情绪变化和有效方式。</p></div>
+        <button class="soft-button" data-start>体验 3 分钟记录</button>
+      </article>`;
   return `
     <section class="screen">
       <div class="hero-copy">
@@ -605,7 +672,7 @@ function renderHome() {
       </div>
       <article class="weather-card">
         <div class="weather-meta">
-          <span class="weather-label"><i class="weather-dot"></i>${latest ? '最近一次记录' : '第一次来到岛上'}</span>
+          <span class="weather-label"><i class="weather-dot"></i>${latest ? latest.source === 'session' ? '本次记录 · 未保存' : '最近一次记录' : '第一次来到岛上'}</span>
           <span>${formatDay(new Date())}</span>
         </div>
         <div class="weather-main">
@@ -613,15 +680,18 @@ function renderHome() {
           <p>${weather[1]}</p>
         </div>
         <div class="weather-footer">
-          <span class="weather-mini">约 3 分钟 · 仅保存在本机</span>
+          <span class="weather-mini">${latest?.source === 'session' ? '仅当前页面可见' : '约 3 分钟 · 仅保存在本机'}</span>
           <button class="primary light" data-start>记录此刻</button>
         </div>
       </article>
-      <div class="section-head"><h3>你的近况</h3><button class="text-button" data-go="climate">查看气候</button></div>
-      <div class="mini-grid">
-        <article class="mini-card"><span>近 7 天</span><strong>${personalText}</strong></article>
-        <article class="mini-card"><span>常见触发</span><strong>${summary.topTrigger}</strong></article>
+      <div class="journey-strip" aria-label="心屿的四个步骤">
+        <div class="journey-step"><strong>01 · 记录</strong>放下此刻</div>
+        <div class="journey-step"><strong>02 · 看清</strong>拆解线索</div>
+        <div class="journey-step"><strong>03 · 照顾</strong>完成小动作</div>
+        <div class="journey-step"><strong>04 · 发现</strong>看见规律</div>
       </div>
+      <div class="section-head"><h3>你的近况</h3><button class="text-button" data-go="climate">查看气候</button></div>
+      ${overview}
       <div class="disclaimer">心屿提供一般性情绪记录与自助支持，不替代专业心理诊断或治疗。</div>
     </section>`;
 }
@@ -709,17 +779,24 @@ function renderResult() {
 
 function renderClimate() {
   const entries = allEntries().slice(0, 7).reverse();
-  const summary = summarizeEntries(userEntries.length ? userEntries : sampleEntries);
+  const recordedEntries = [...userEntries, ...sessionEntries];
+  const hasPersonalData = userEntries.length > 0;
+  const hasSessionData = sessionEntries.length > 0;
+  const hasRecordedData = recordedEntries.length > 0;
+  const summary = summarizeEntries(hasRecordedData ? recordedEntries : sampleEntries);
   const points = chartPoints(entries);
-  return `<section class="screen"><p class="eyebrow">INNER CLIMATE</p><h1>你的内心气候</h1><p class="prompt">规律不是结论，只是值得继续观察的线索。</p>
-    <article class="chart-card"><div class="chart-head"><div><small style="color:rgba(255,255,255,.65)">最近 7 次记录</small><h2 style="margin-top:4px">情绪强度变化</h2></div><span class="chart-badge">含示例数据</span></div>
+  const climateTitle = hasPersonalData ? '你的内心气候' : hasSessionData ? '本次情绪气候' : '一份示例气候';
+  const climatePrompt = hasPersonalData ? '规律不是结论，只是值得继续观察的线索。' : hasSessionData ? '这次结果仅在当前页面有效，浏览器未能保存它。' : '先看看记录如何变成线索；完成一次记录后，这里才会生成你的观察。';
+  const climateBadge = hasPersonalData ? '我的 + 示例' : hasSessionData ? '本次未保存 + 示例' : '仅为示例';
+  return `<section class="screen"><p class="eyebrow">INNER CLIMATE</p><h1>${climateTitle}</h1><p class="prompt">${climatePrompt}</p>
+    <article class="chart-card"><div class="chart-head"><div><small style="color:rgba(255,255,255,.65)">${hasRecordedData ? '最近 7 次记录' : '5 条体验记录'}</small><h2 style="margin-top:4px">情绪强度变化</h2></div><span class="chart-badge">${climateBadge}</span></div>
       <svg class="chart" viewBox="0 0 330 170" role="img" aria-label="最近七次情绪强度趋势图"><defs><linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f5cdb1" stop-opacity=".38"/><stop offset="1" stop-color="#f5cdb1" stop-opacity="0"/></linearGradient></defs><line class="grid" x1="16" x2="314" y1="45" y2="45"/><line class="grid" x1="16" x2="314" y1="90" y2="90"/><line class="grid" x1="16" x2="314" y1="135" y2="135"/><path class="area" d="${points.area}"/><path class="line" d="${points.line}"/>${points.circles}${points.labels}</svg>
     </article>
-    <div class="section-head"><h3>${userEntries.length ? '正在浮现的线索' : '示例观察'}</h3></div>
-    <div class="mini-grid"><article class="mini-card"><span>高频触发</span><strong>${summary.topTrigger}</strong></article><article class="mini-card"><span>更适合你的方式</span><strong>${careNames[summary.bestCare] || '继续观察'}</strong></article></div>
-    <div class="section-head"><h3>记录</h3><span class="small muted">${summary.personalCount} 条我的记录</span></div>
+    <div class="section-head"><h3>${hasPersonalData ? '正在浮现的线索' : hasSessionData ? '本次留下的线索' : '示例如何形成观察'}</h3></div>
+    <div class="mini-grid"><article class="mini-card"><span>${hasPersonalData ? '高频触发' : hasSessionData ? '本次触发' : '示例高频触发'}</span><strong>${summary.topTrigger}</strong></article><article class="mini-card"><span>${hasPersonalData ? '对你更有效' : hasSessionData ? '本次尝试' : '示例有效方式'}</span><strong>${careNames[summary.bestCare] || '继续观察'}</strong></article></div>
+    <div class="section-head"><h3>记录</h3><span class="small muted">${summary.personalCount} 条我的记录${hasSessionData ? ` · ${sessionEntries.length} 条未保存` : ''}</span></div>
     <div class="history-list">${allEntries().slice(0, 6).map(renderHistory).join('')}</div>
-    ${summary.personalCount === 0 ? '<div class="disclaimer">目前展示的是体验用示例气候。完成一次记录后，你的数据会以“我的”标识出现。</div>' : ''}
+    ${!hasRecordedData ? '<div class="disclaimer">目前展示的是体验用示例气候。完成一次记录后，你的数据会以“我的”标识出现。</div>' : hasSessionData ? '<div class="disclaimer">带“未保存”标识的记录只在当前页面有效，刷新或关闭页面后会消失。</div>' : ''}
   </section>`;
 }
 
@@ -736,11 +813,12 @@ function chartPoints(entries) {
 
 function renderHistory(item) {
   const date = new Date(item.createdAt);
-  return `<article class="history-card"><div class="history-weather">${moodEmoji[item.mood] || '◌'}</div><div><strong>${item.mood} · ${item.trigger}</strong><p>${date.getMonth() + 1}月${date.getDate()}日 · ${item.before} → ${item.after ?? item.before}</p></div><span class="source-label ${item.source === 'user' ? 'mine' : ''}">${item.source === 'user' ? '我的' : '示例'}</span></article>`;
+  const sourceText = item.source === 'user' ? '我的' : item.source === 'session' ? '未保存' : '示例';
+  return `<article class="history-card"><div class="history-weather">${moodEmoji[item.mood] || '◌'}</div><div><strong>${item.mood} · ${item.trigger}</strong><p>${date.getMonth() + 1}月${date.getDate()}日 · ${item.before} → ${item.after ?? item.before}</p></div><span class="source-label ${item.source !== 'sample' ? 'mine' : ''}">${sourceText}</span></article>`;
 }
 
 function renderPrivacy() {
-  const writable = persisted.mode === 'writable';
+  const writable = storageWritable;
   return `<section class="screen"><p class="eyebrow">PRIVACY BY DEFAULT</p><h1>你的岛，属于你</h1><p class="prompt">记录只留在这个浏览器中。没有账号，没有上传，也没有广告追踪。</p>
     <article class="panel"><div class="privacy-row"><div><strong>本地保存</strong><p>刷新后仍可看到，换设备不会同步</p></div><span class="status-pill">${writable ? '已开启' : '只读保护'}</span></div><div class="privacy-row"><div><strong>网络传输</strong><p>情绪文字不会发送到服务器</p></div><span class="status-pill">无</span></div><div class="privacy-row"><div><strong>示例数据</strong><p>始终标注“示例”，不混作你的记录</p></div><span class="status-pill">5 条</span></div></article>
     <div class="section-head"><h3>管理数据</h3></div><div class="button-row"><button class="soft-button" data-export>导出我的记录</button><button class="danger-button" data-clear>清除我的记录</button></div>
@@ -790,7 +868,6 @@ function finishExercise() {
 
 function saveDraft() {
   if (draft.saved) return;
-  draft.saved = true;
   const entry = {
     id: draft.id,
     source: 'user',
@@ -803,24 +880,44 @@ function saveDraft() {
     insight: draft.insight
   };
   const result = saveEntryIdempotently(storage, entry);
+  if (result.status === 'invalid') {
+    notify('记录内容不完整，请返回检查后重试');
+    return;
+  }
+  if (result.status === 'failed' || result.status === 'readonly') {
+    storageWritable = false;
+    draft.saved = true;
+    if (!sessionEntries.some(item => item.id === entry.id)) sessionEntries.unshift({ ...entry, source: 'session' });
+    go('climate');
+    notify('浏览器未能保存；本次结果仅在当前页面有效');
+    return;
+  }
+  draft.saved = true;
+  storageWritable = true;
   if (!userEntries.some(item => item.id === entry.id)) userEntries.unshift(entry);
-  if (result.status === 'failed' || result.status === 'readonly') notify('浏览器未能保存，这次结果仅在当前页面有效');
   persisted = readEntries(storage);
   go('climate');
 }
 
 function clearPersonalData() {
   if (!window.confirm('确认清除这个浏览器中的所有个人记录吗？示例数据会保留。')) return;
+  sessionEntries = [];
   try {
-    if (!storage) throw new Error('storage-unavailable');
+    if (!storage) {
+      if (userEntries.length) throw new Error('storage-unavailable');
+      notify('当前页面中的未保存记录已清除');
+      return render();
+    }
     storage.removeItem(STORAGE_KEY);
     if (storage.getItem(STORAGE_KEY) !== null) throw new Error('not-cleared');
     userEntries = [];
     persisted = readEntries(storage);
+    storageWritable = persisted.mode === 'writable';
     notify('个人记录已从这个浏览器清除');
     render();
   } catch {
-    notify('未能清除，请检查浏览器存储权限');
+    notify('未保存记录已清除；浏览器中的已存记录未能清除');
+    render();
   }
 }
 
