@@ -60,7 +60,7 @@ button:focus-visible, textarea:focus-visible, input:focus-visible {
 .ambient-b { width: 180px; height: 180px; bottom: 5%; left: -100px; background: rgba(236, 184, 144, .24); }
 
 .app-shell {
-  width: min(100%, 620px);
+  width: min(100%, 480px);
   min-height: 100vh;
   margin: 0 auto;
   position: relative;
@@ -144,7 +144,7 @@ p { line-height: 1.65; }
 .primary:hover, .secondary:hover, .soft-button:hover { transform: translateY(-1px); }
 .primary { color: #fff; background: var(--ink); box-shadow: 0 12px 24px rgba(39,36,31,.17); }
 .primary.light { color: var(--ink); background: rgba(255,255,255,.92); box-shadow: none; }
-.primary.full, .secondary.full { width: 100%; }
+.primary.full, .secondary.full, .danger-button.full { width: 100%; }
 .secondary { background: rgba(255,255,255,.65); border: 1px solid var(--line); }
 .soft-button { background: rgba(111,99,169,.1); color: var(--purple-dark); }
 .danger-button { background: rgba(169,77,77,.1); color: var(--danger); }
@@ -163,6 +163,31 @@ button:disabled { opacity: .45; cursor: not-allowed; transform: none !important;
 .mini-card span { display: block; color: var(--muted); font-size: 12px; margin-bottom: 10px; }
 .mini-card strong { font-size: 17px; }
 .panel { border-radius: 26px; padding: 22px; }
+
+.tool-grid { display: grid; gap: 12px; }
+.resume-card { width: 100%; margin-bottom: 12px; padding: 14px 16px; display: flex; justify-content: space-between; gap: 12px; border: 1px solid rgba(111,99,169,.22); border-radius: 18px; color: var(--purple-dark); background: rgba(217,211,237,.38); cursor: pointer; text-align: left; }
+.resume-card span { color: var(--muted); font-size: 12px; }
+.resume-card strong { font-size: 13px; }
+.tool-card {
+  width: 100%;
+  padding: 18px;
+  display: grid;
+  grid-template-columns: 46px 1fr auto;
+  column-gap: 13px;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  color: var(--ink);
+  background: rgba(255,255,255,.65);
+  box-shadow: var(--shadow);
+  text-align: left;
+  cursor: pointer;
+}
+.tool-icon { grid-row: 1 / 4; width: 46px; height: 46px; display: grid; place-items: center; border-radius: 15px; background: rgba(217,211,237,.55); color: var(--purple-dark); font-size: 21px; }
+.tool-time { grid-column: 3; color: var(--muted); font-size: 12px; }
+.tool-card strong { grid-column: 2; font-size: 17px; }
+.tool-card p { grid-column: 2 / 4; margin: 3px 0 0; color: var(--muted); font-size: 13px; line-height: 1.5; }
+.tool-action { grid-column: 2 / 4; margin-top: 8px; color: var(--purple-dark); font-size: 13px; font-weight: 700; }
 
 .journey-strip {
   display: grid;
@@ -263,11 +288,24 @@ textarea { width: 100%; min-height: 132px; resize: vertical; border: 1px solid v
 .chart .point { fill: #fff; stroke: #776a96; stroke-width: 3; }
 .chart text { fill: rgba(255,255,255,.58); font-size: 10px; }
 .history-list { display: grid; gap: 10px; }
-.history-card { padding: 16px; border-radius: 20px; display: grid; grid-template-columns: 45px 1fr auto; gap: 12px; align-items: center; }
+.history-card { width: 100%; padding: 16px; border-radius: 20px; display: grid; grid-template-columns: 45px 1fr auto; gap: 12px; align-items: center; color: var(--ink); text-align: left; cursor: pointer; }
 .history-weather { width: 45px; height: 45px; display: grid; place-items: center; border-radius: 15px; background: rgba(217,211,237,.48); font-size: 21px; }
-.history-card p { margin: 2px 0 0; color: var(--muted); font-size: 12px; }
+.history-copy { min-width: 0; }
+.history-copy strong, .history-copy small { display: block; overflow-wrap: anywhere; }
+.history-copy small { margin-top: 3px; color: var(--muted); font-size: 12px; }
 .source-label { padding: 5px 8px; border-radius: 999px; font-size: 10px; color: var(--muted); background: rgba(39,36,31,.05); }
 .source-label.mine { color: var(--purple-dark); background: rgba(111,99,169,.1); }
+
+.back-button { margin: -8px 0 8px -8px; }
+.detail-head { display: flex; gap: 14px; align-items: center; margin-bottom: 20px; }
+.detail-head .eyebrow { margin-bottom: 4px; }
+.detail-head p { margin: 4px 0 0; }
+.detail-weather { flex: 0 0 auto; width: 62px; height: 62px; display: grid; place-items: center; border-radius: 21px; background: rgba(217,211,237,.58); font-size: 28px; }
+.detail-block { margin-top: 12px; }
+.detail-block p { margin: 8px 0 0; overflow-wrap: anywhere; white-space: pre-wrap; }
+.detail-label { color: var(--muted); font-size: 12px; }
+.insight-stack.compact { margin-top: 0; }
+.detail-screen > .danger-button { margin-top: 18px; }
 
 .safety-card { border: 1px solid rgba(169,77,77,.16); border-radius: 30px; padding: 26px; background: rgba(255,250,247,.8); box-shadow: var(--shadow); }
 .safety-symbol { width: 60px; height: 60px; display: grid; place-items: center; border-radius: 20px; background: rgba(169,77,77,.1); color: var(--danger); font-size: 26px; }
@@ -286,11 +324,11 @@ textarea { width: 100%; min-height: 132px; resize: vertical; border: 1px solid v
   bottom: max(var(--nav-gap), env(safe-area-inset-bottom));
   left: 50%;
   transform: translateX(-50%);
-  width: min(calc(100% - 28px), 588px);
+  width: min(calc(100% - 28px), 452px);
   min-height: var(--nav-height);
   padding: 7px;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 4px;
   border: 1px solid rgba(255,255,255,.65);
   border-radius: 23px;
@@ -312,7 +350,6 @@ body:has(textarea:focus) .bottom-nav {
 }
 
 @media (min-width: 760px) {
-  body::before { content: "把情绪变成\A可以理解和照顾的天气"; white-space: pre; position: fixed; left: max(24px, calc(50vw - 590px)); top: 22vh; width: 220px; color: rgba(39,36,31,.34); font-size: 17px; line-height: 1.55; letter-spacing: .06em; }
   .app-shell { border-left: 1px solid rgba(255,255,255,.65); border-right: 1px solid rgba(255,255,255,.65); background: rgba(247,243,238,.26); box-shadow: 0 0 80px rgba(74,60,52,.06); }
   .topbar { min-height: 54px; }
   #app { padding-top: 0; }
@@ -364,6 +401,10 @@ body:has(textarea:focus) .bottom-nav {
       <button data-go="home" data-nav="home">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 11 9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-9Z"/></svg>
         <span>此刻</span>
+      </button>
+      <button data-go="tools" data-nav="tools">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v3M12 18v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M3 12h3M18 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/><circle cx="12" cy="12" r="4"/></svg>
+        <span>工具</span>
       </button>
       <button data-go="climate" data-nav="climate">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V9M10 19V5M16 19v-7M22 19V3"/></svg>
@@ -492,8 +533,29 @@ function normalizeEntry(item) {
     trigger: item.trigger,
     before,
     after,
-    careType: item.careType
+    careType: item.careType,
+    note: normalizeText(item.note, 280),
+    insight: normalizeInsight(item.insight)
   };
+}
+
+function normalizeText(value, maxLength) {
+  return typeof value === 'string' ? value.slice(0, maxLength) : '';
+}
+
+function normalizeInsight(value) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
+  const event = normalizeText(value.event, 320);
+  const thought = normalizeText(value.thought, 320);
+  const emotions = normalizeTextList(value.emotions);
+  const needs = normalizeTextList(value.needs);
+  if (!event && !thought && !emotions.length && !needs.length) return null;
+  return { event, thought, emotions, needs };
+}
+
+function normalizeTextList(value) {
+  if (!Array.isArray(value)) return [];
+  return value.filter(item => typeof item === 'string').slice(0, 6).map(item => item.slice(0, 60));
 }
 
 function saveEntryIdempotently(storage, entry) {
@@ -511,8 +573,29 @@ function saveEntryIdempotently(storage, entry) {
   }
 }
 
+function removeEntryById(storage, id) {
+  const current = readEntries(storage);
+  if (current.mode !== 'writable') return { status: 'readonly', entries: current.entries };
+  const entries = current.entries.filter(item => item.id !== id);
+  if (entries.length === current.entries.length) return { status: 'not-found', entries: current.entries };
+  try {
+    storage.setItem(STORAGE_KEY, JSON.stringify(entries));
+    const verified = readEntries(storage);
+    if (verified.mode !== 'writable' || verified.entries.some(item => item.id === id) || verified.entries.length !== entries.length) {
+      return { status: 'failed', entries: current.entries };
+    }
+    return { status: 'removed', entries: verified.entries };
+  } catch {
+    return { status: 'failed', entries: current.entries };
+  }
+}
+
 function summarizeEntries(entries = []) {
   const personal = entries.filter(item => item.source === 'user');
+  const observed = entries.filter(item => item.source === 'user' || item.source === 'session');
+  const samplesOnly = entries.length > 0 && entries.every(item => item.source === 'sample');
+  const evidenceCount = samplesOnly ? entries.length : observed.length;
+  const patternReady = evidenceCount >= 3;
   const triggerCounts = new Map();
   const careGains = new Map();
   entries.forEach(item => {
@@ -522,11 +605,12 @@ function summarizeEntries(entries = []) {
       careGains.set(item.careType, { total: previous.total + Math.max(0, item.before - item.after), count: previous.count + 1 });
     }
   });
-  const topTrigger = [...triggerCounts].sort((a, b) => b[1] - a[1])[0]?.[0] || '暂未发现';
+  const topTrigger = patternReady ? ([...triggerCounts].sort((a, b) => b[1] - a[1])[0]?.[0] || '暂未发现') : '正在积累';
   const bestCare = [...careGains]
+    .filter(([, value]) => value.count >= 2)
     .map(([type, value]) => [type, value.total / value.count])
     .sort((a, b) => b[1] - a[1])[0]?.[0] || '暂无';
-  return { personalCount: personal.length, topTrigger, bestCare };
+  return { personalCount: personal.length, evidenceCount, patternReady, topTrigger, bestCare: patternReady ? bestCare : '暂无' };
 }
 
 const app = document.querySelector('#app');
@@ -536,7 +620,7 @@ const moods = [
   ['焦虑', '🌧️'], ['低落', '☁️'], ['生气', '⛈️']
 ];
 const triggers = ['学业', '工作', '人际', '家庭', '感情', '身体', '经济', '不知道'];
-const careNames = { breathe: '柔和呼吸', ground: '感官落地', plan: '最小行动' };
+const careNames = { breathe: '柔和呼吸', ground: '感官落地', plan: '最小行动', move: '轻柔活动' };
 const moodEmoji = Object.fromEntries(moods);
 const moodWeather = {
   开心: ['有光落在岛上', '此刻的轻盈，也值得被好好记住。'],
@@ -573,6 +657,9 @@ let exerciseInterval = null;
 let exerciseDeadline = null;
 let analysisTimer = null;
 let toastTimer = null;
+let activeEntry = null;
+let suspendedDiaryDraft = null;
+let resumableDiaryView = null;
 let draft = freshDraft();
 
 function freshDraft() {
@@ -588,6 +675,7 @@ function freshDraft() {
     energy: '中',
     exercise: null,
     after: 4,
+    exerciseOrigin: 'diary',
     saved: false
   };
 }
@@ -608,9 +696,19 @@ function pauseExerciseTimer() {
 }
 
 function go(next) {
-  const allowed = ['home', 'checkin', 'loading', 'insight', 'care', 'exercise', 'result', 'climate', 'privacy', 'safety'];
+  const allowed = ['home', 'checkin', 'loading', 'insight', 'care', 'exercise', 'result', 'tools', 'climate', 'detail', 'privacy', 'safety'];
   if (!allowed.includes(next)) next = 'home';
+  const diaryViews = ['checkin', 'loading', 'insight', 'care', 'exercise', 'result', 'safety'];
+  if (next === 'tools' && diaryViews.includes(view) && draft.exerciseOrigin === 'diary' && !draft.saved) {
+    resumableDiaryView = view === 'loading' ? 'insight' : view === 'safety' ? 'checkin' : view;
+    if (view === 'safety') checkinStep = 3;
+  }
+  const leavingToolboxExercise = view === 'exercise' && draft.exerciseOrigin === 'toolbox' && next !== 'exercise';
   if (view === 'exercise' && next !== 'exercise') clearExerciseTimer();
+  if (leavingToolboxExercise && suspendedDiaryDraft) {
+    draft = suspendedDiaryDraft;
+    suspendedDiaryDraft = null;
+  }
   if (view === 'loading' && next !== 'loading' && analysisTimer) clearTimeout(analysisTimer);
   view = next;
   render();
@@ -627,7 +725,8 @@ function notify(message) {
 
 function render() {
   document.querySelectorAll('[data-nav]').forEach(button => {
-    button.classList.toggle('active', button.dataset.nav === view || (view === 'checkin' && button.dataset.nav === 'home'));
+    const navView = view === 'detail' ? 'climate' : view === 'exercise' && draft.exerciseOrigin === 'toolbox' ? 'tools' : view;
+    button.classList.toggle('active', button.dataset.nav === navView || (view === 'checkin' && button.dataset.nav === 'home'));
   });
   const screens = {
     home: renderHome,
@@ -637,7 +736,9 @@ function render() {
     care: renderCare,
     exercise: renderExercise,
     result: renderResult,
+    tools: renderTools,
     climate: renderClimate,
+    detail: renderDetail,
     privacy: renderPrivacy,
     safety: renderSafety
   };
@@ -654,10 +755,11 @@ function renderHome() {
   const latest = recordedEntries[0];
   const weather = latest ? moodWeather[latest.mood] : ['欢迎来到心屿', '这里没有需要表现好的地方，先听听自己。'];
   const summary = summarizeEntries(recordedEntries);
+  const patternText = summary.patternReady ? summary.topTrigger : `再记录 ${Math.max(0, 3 - summary.evidenceCount)} 次看见规律`;
   const overview = recordedEntries.length
     ? `<div class="mini-grid">
         <article class="mini-card"><span>近 7 天</span><strong>${userEntries.length ? `${summary.personalCount} 次已保存${sessionEntries.length ? ` · ${sessionEntries.length} 条未保存` : ''}` : `${sessionEntries.length} 条未保存记录`}</strong></article>
-        <article class="mini-card"><span>常见触发</span><strong>${summary.topTrigger}</strong></article>
+        <article class="mini-card"><span>${summary.patternReady ? '常见触发' : '规律进度'}</span><strong>${patternText}</strong></article>
       </div>`
     : `<article class="empty-card">
         <div><strong>完成第一次记录后生成</strong><p>这里会出现你的触发因素、情绪变化和有效方式。</p></div>
@@ -736,11 +838,11 @@ function renderInsight() {
 }
 
 function insightCard(icon, label, content) {
-  return `<article class="insight-card"><div class="insight-icon">${icon}</div><div><small>${label}</small><p>${content}</p></div></article>`;
+  return `<article class="insight-card"><div class="insight-icon">${icon}</div><div><small>${escapeHtml(label)}</small><p>${escapeHtml(content)}</p></div></article>`;
 }
 
 function insightTags(icon, label, tags) {
-  return `<article class="insight-card"><div class="insight-icon">${icon}</div><div><small>${label}</small>${tags.map(tag => `<span class="tag">${tag}</span>`).join('')}</div></article>`;
+  return `<article class="insight-card"><div class="insight-icon">${icon}</div><div><small>${escapeHtml(label)}</small>${tags.map(tag => `<span class="tag">${escapeHtml(tag)}</span>`).join('')}</div></article>`;
 }
 
 function renderCare() {
@@ -755,6 +857,19 @@ function optionBlock(label, key, items, selected, formatter = item => item) {
   return `<div class="option-block"><label>${label}</label><div class="segmented" role="group" aria-label="${label}">${items.map(item => `<button class="${String(selected) === String(item) ? 'selected' : ''}" aria-pressed="${String(selected) === String(item)}" data-option="${key}" data-value="${item}">${formatter(item)}</button>`).join('')}</div></div>`;
 }
 
+function renderTools() {
+  const tools = [
+    ['breathe', '◌', '1 分钟', '柔和呼吸', '跟随圆圈放慢呼吸，让身体先松一点。'],
+    ['ground', '◎', '2 分钟', '感官落地', '用视觉、触觉和声音，把注意力带回此刻。'],
+    ['move', '↗', '3 分钟', '轻柔活动', '松开肩颈和手臂，适合久坐与疲惫时。']
+  ];
+  return `<section class="screen"><p class="eyebrow">CARE TOOLBOX</p><h1>现在就能做的小事</h1><p class="prompt">不需要先写日记。选一个此刻最容易开始的练习。</p>
+    ${resumableDiaryView ? '<button class="resume-card" data-resume-diary><span>未完成的情绪日记还在</span><strong>继续刚才的记录 →</strong></button>' : ''}
+    <div class="tool-grid">${tools.map(([type, icon, time, title, copy]) => `<button class="tool-card" data-tool="${type}"><span class="tool-icon">${icon}</span><span class="tool-time">${time}</span><strong>${title}</strong><p>${copy}</p><span class="tool-action">开始练习 →</span></button>`).join('')}</div>
+    <div class="disclaimer">这些是一般性的自助练习。身体不适时请停止，情绪危机时请优先联系真实的人与专业支持。</div>
+  </section>`;
+}
+
 function renderExercise() {
   const ex = draft.exercise;
   let body = '';
@@ -762,11 +877,13 @@ function renderExercise() {
     body = `<div class="breath-stage"><div class="breath-circle"><div><strong id="breath-time">${ex.duration}</strong><span id="breath-cue">秒 · 准备好后开始</span></div></div></div><button class="primary light full" data-breathe-start>开始柔和呼吸</button>`;
   } else if (ex.type === 'ground') {
     body = `<div class="exercise-list">${['看见一种柔和的颜色', '感受双脚与地面的接触', '听见一个近处的声音', '慢慢呼出一口气'].map((text, index) => `<label class="exercise-step"><input type="checkbox" data-ex-step><span>${index + 1}. ${text}</span></label>`).join('')}</div><button class="primary light full" data-ex-complete>我回到此刻了</button>`;
+  } else if (ex.type === 'move') {
+    body = `<div class="exercise-list">${['双肩慢慢向后绕 3 圈', '手臂向上伸展，保持一次呼吸', '轻轻转动颈部，回到正中', '站起来或活动双脚 20 秒'].map((text, index) => `<label class="exercise-step"><input type="checkbox" data-ex-step><span>${index + 1}. ${text}</span></label>`).join('')}</div><button class="primary light full" data-ex-complete>身体松开一点了</button>`;
   } else {
     const action = draft.trigger === '学业' ? '写下最可能被问到的一个问题' : draft.trigger === '经济' ? '列出一个今天能确认的数字或信息' : '写下下一步最小、最具体的动作';
     body = `<div class="exercise-list"><label class="exercise-step"><input type="checkbox" data-ex-step><span>1. ${action}</span></label><label class="exercise-step"><input type="checkbox" data-ex-step><span>2. 只做它，不处理整件事</span></label><label class="exercise-step"><input type="checkbox" data-ex-step><span>3. 做完后允许自己停下来</span></label></div><button class="primary light full" data-ex-complete>这个动作已经足够小</button>`;
   }
-  return `<section class="screen"><article class="exercise-hero"><p class="eyebrow">为此刻推荐</p><h2>${ex.title}</h2><p>${ex.reason}</p>${body}</article><button class="text-button full" style="margin-top:18px" data-skip>暂时不做，直接记录变化</button></section>`;
+  return `<section class="screen"><article class="exercise-hero"><p class="eyebrow">${draft.exerciseOrigin === 'toolbox' ? '自助练习' : '为此刻推荐'}</p><h2>${ex.title}</h2><p>${ex.reason}</p>${body}</article><button class="text-button full" style="margin-top:18px" data-skip>${draft.exerciseOrigin === 'toolbox' ? '返回工具箱' : '暂时不做，直接记录变化'}</button></section>`;
 }
 
 function renderResult() {
@@ -788,12 +905,17 @@ function renderClimate() {
   const climateTitle = hasPersonalData ? '你的内心气候' : hasSessionData ? '本次情绪气候' : '一份示例气候';
   const climatePrompt = hasPersonalData ? '规律不是结论，只是值得继续观察的线索。' : hasSessionData ? '这次结果仅在当前页面有效，浏览器未能保存它。' : '先看看记录如何变成线索；完成一次记录后，这里才会生成你的观察。';
   const climateBadge = hasPersonalData ? '我的 + 示例' : hasSessionData ? '本次未保存 + 示例' : '仅为示例';
+  const isExample = !hasRecordedData;
+  const firstSignalLabel = isExample ? '示例高频触发' : summary.patternReady ? '高频触发' : '规律进度';
+  const firstSignalValue = isExample || summary.patternReady ? summary.topTrigger : `还需 ${Math.max(0, 3 - summary.evidenceCount)} 次记录`;
+  const careSignalLabel = isExample ? '示例有效方式' : summary.patternReady ? '可能更有效' : '调节方式';
+  const careSignalValue = isExample || summary.patternReady ? (careNames[summary.bestCare] || '继续观察') : '继续观察';
   return `<section class="screen"><p class="eyebrow">INNER CLIMATE</p><h1>${climateTitle}</h1><p class="prompt">${climatePrompt}</p>
     <article class="chart-card"><div class="chart-head"><div><small style="color:rgba(255,255,255,.65)">${hasRecordedData ? '最近 7 次记录' : '5 条体验记录'}</small><h2 style="margin-top:4px">情绪强度变化</h2></div><span class="chart-badge">${climateBadge}</span></div>
       <svg class="chart" viewBox="0 0 330 170" role="img" aria-label="最近七次情绪强度趋势图"><defs><linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f5cdb1" stop-opacity=".38"/><stop offset="1" stop-color="#f5cdb1" stop-opacity="0"/></linearGradient></defs><line class="grid" x1="16" x2="314" y1="45" y2="45"/><line class="grid" x1="16" x2="314" y1="90" y2="90"/><line class="grid" x1="16" x2="314" y1="135" y2="135"/><path class="area" d="${points.area}"/><path class="line" d="${points.line}"/>${points.circles}${points.labels}</svg>
     </article>
-    <div class="section-head"><h3>${hasPersonalData ? '正在浮现的线索' : hasSessionData ? '本次留下的线索' : '示例如何形成观察'}</h3></div>
-    <div class="mini-grid"><article class="mini-card"><span>${hasPersonalData ? '高频触发' : hasSessionData ? '本次触发' : '示例高频触发'}</span><strong>${summary.topTrigger}</strong></article><article class="mini-card"><span>${hasPersonalData ? '对你更有效' : hasSessionData ? '本次尝试' : '示例有效方式'}</span><strong>${careNames[summary.bestCare] || '继续观察'}</strong></article></div>
+    <div class="section-head"><h3>${isExample ? '示例如何形成观察' : summary.patternReady ? '正在浮现的线索' : '正在积累线索'}</h3></div>
+    <div class="mini-grid"><article class="mini-card"><span>${firstSignalLabel}</span><strong>${firstSignalValue}</strong></article><article class="mini-card"><span>${careSignalLabel}</span><strong>${careSignalValue}</strong></article></div>
     <div class="section-head"><h3>记录</h3><span class="small muted">${summary.personalCount} 条我的记录${hasSessionData ? ` · ${sessionEntries.length} 条未保存` : ''}</span></div>
     <div class="history-list">${allEntries().slice(0, 6).map(renderHistory).join('')}</div>
     ${!hasRecordedData ? '<div class="disclaimer">目前展示的是体验用示例气候。完成一次记录后，你的数据会以“我的”标识出现。</div>' : hasSessionData ? '<div class="disclaimer">带“未保存”标识的记录只在当前页面有效，刷新或关闭页面后会消失。</div>' : ''}
@@ -814,7 +936,28 @@ function chartPoints(entries) {
 function renderHistory(item) {
   const date = new Date(item.createdAt);
   const sourceText = item.source === 'user' ? '我的' : item.source === 'session' ? '未保存' : '示例';
-  return `<article class="history-card"><div class="history-weather">${moodEmoji[item.mood] || '◌'}</div><div><strong>${item.mood} · ${item.trigger}</strong><p>${date.getMonth() + 1}月${date.getDate()}日 · ${item.before} → ${item.after ?? item.before}</p></div><span class="source-label ${item.source !== 'sample' ? 'mine' : ''}">${sourceText}</span></article>`;
+  return `<button class="history-card" data-entry-source="${escapeHtml(item.source)}" data-entry-id="${escapeHtml(item.id)}"><span class="history-weather">${moodEmoji[item.mood] || '◌'}</span><span class="history-copy"><strong>${escapeHtml(item.mood)} · ${escapeHtml(item.trigger)}</strong><small>${date.getMonth() + 1}月${date.getDate()}日 · ${item.before} → ${item.after ?? item.before}</small></span><span class="source-label ${item.source !== 'sample' ? 'mine' : ''}">${sourceText}</span></button>`;
+}
+
+function renderDetail() {
+  const item = activeEntry && findEntry(activeEntry.source, activeEntry.id);
+  if (!item) return `<section class="screen"><h2>这条记录已经不在了</h2><p class="prompt">它可能已被清除或只存在于之前的页面会话中。</p><button class="primary full" data-go="climate">返回气候</button></section>`;
+  const date = new Date(item.createdAt);
+  const sourceText = item.source === 'user' ? '已保存在本机' : item.source === 'session' ? '仅当前页面可见' : '体验示例';
+  const insight = item.insight;
+  return `<section class="screen detail-screen"><button class="text-button back-button" data-go="climate">← 返回气候</button>
+    <div class="detail-head"><span class="detail-weather">${moodEmoji[item.mood] || '◌'}</span><div><p class="eyebrow">${escapeHtml(sourceText)}</p><h2>${escapeHtml(item.mood)} · ${escapeHtml(item.trigger)}</h2><p class="small muted">${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日 · ${item.before} → ${item.after ?? item.before}</p></div></div>
+    <article class="panel detail-block"><span class="detail-label">当时发生了什么</span><p>${item.note ? escapeHtml(item.note) : '这次没有留下文字。'}</p></article>
+    <div class="section-head"><h3>情绪镜子</h3></div>
+    ${insight ? `<div class="insight-stack compact">${insightCard('◌', '发生的事', insight.event)}${insightCard('↗', '脑海里的声音', insight.thought)}${insightTags('≈', '可能的情绪', insight.emotions)}${insightTags('♡', '当时的需要', insight.needs)}</div>` : '<div class="disclaimer">旧记录没有保存情绪镜子，但情绪、触发和强度仍然完整保留。</div>'}
+    <article class="panel detail-block"><span class="detail-label">尝试的照顾</span><p>${escapeHtml(careNames[item.careType] || '暂时跳过')}</p></article>
+    ${item.source === 'sample' ? '' : '<button class="danger-button full" data-delete-entry>删除这条记录</button>'}
+  </section>`;
+}
+
+function findEntry(source, id) {
+  const pool = source === 'user' ? userEntries : source === 'session' ? sessionEntries : sampleEntries;
+  return pool.find(item => item.source === source && item.id === id) || null;
 }
 
 function renderPrivacy() {
@@ -856,18 +999,24 @@ function tickBreathing() {
     if (cue) cue.textContent = `${remaining % 8 > 4 ? '慢慢呼气' : '轻轻吸气'}`;
     if (remaining <= 0) {
       clearExerciseTimer();
-      draft.after = Math.max(1, draft.intensity - 2);
-      go('result');
+      finishExercise();
     }
 }
 
 function finishExercise() {
+  if (draft.exerciseOrigin === 'toolbox') {
+    clearExerciseTimer();
+    go('tools');
+    notify('练习完成。谢谢你照顾了此刻的自己');
+    return;
+  }
   draft.after = Math.max(1, draft.intensity - 2);
   go('result');
 }
 
-function saveDraft() {
+async function saveDraft() {
   if (draft.saved) return;
+  if (draft.exerciseOrigin !== 'diary') return notify('工具练习不会创建日记记录');
   const entry = {
     id: draft.id,
     source: 'user',
@@ -877,9 +1026,10 @@ function saveDraft() {
     before: draft.intensity,
     after: draft.after,
     careType: draft.exercise?.type || 'skipped',
+    note: draft.note,
     insight: draft.insight
   };
-  const result = saveEntryIdempotently(storage, entry);
+  const result = await withEntryLock(() => saveEntryIdempotently(storage, entry));
   if (result.status === 'invalid') {
     notify('记录内容不完整，请返回检查后重试');
     return;
@@ -887,36 +1037,82 @@ function saveDraft() {
   if (result.status === 'failed' || result.status === 'readonly') {
     storageWritable = false;
     draft.saved = true;
+    resumableDiaryView = null;
     if (!sessionEntries.some(item => item.id === entry.id)) sessionEntries.unshift({ ...entry, source: 'session' });
     go('climate');
     notify('浏览器未能保存；本次结果仅在当前页面有效');
     return;
   }
   draft.saved = true;
+  resumableDiaryView = null;
   storageWritable = true;
-  if (!userEntries.some(item => item.id === entry.id)) userEntries.unshift(entry);
+  userEntries = result.entries.map(item => ({ ...item, source: 'user' }));
   persisted = readEntries(storage);
   go('climate');
 }
 
-function clearPersonalData() {
+function startTool(type) {
+  const tools = {
+    breathe: { type: 'breathe', title: '一分钟柔和呼吸', duration: 60, reason: '不用追求深呼吸，只需要让呼气比吸气稍微长一点。' },
+    ground: { type: 'ground', title: '感官落地练习', duration: 0, reason: '把注意力从反复的念头，温和地带回此刻。' },
+    move: { type: 'move', title: '三分钟轻柔活动', duration: 0, reason: '不追求运动量，只让久坐和紧绷的身体重新流动。' }
+  };
+  if (!tools[type]) return;
+  suspendedDiaryDraft = draft;
+  draft = freshDraft();
+  draft.exerciseOrigin = 'toolbox';
+  draft.exercise = tools[type];
+  go('exercise');
+}
+
+async function deleteActiveEntry() {
+  if (!activeEntry) return;
+  const item = findEntry(activeEntry.source, activeEntry.id);
+  if (!item || item.source === 'sample') return;
+  if (item.source === 'session') {
+    sessionEntries = sessionEntries.filter(entry => entry.id !== item.id);
+    activeEntry = null;
+    go('climate');
+    notify('未保存记录已删除');
+    return;
+  }
+  if (!window.confirm('确认删除这条情绪日记吗？删除后无法恢复。')) return;
+  const result = await withEntryLock(() => removeEntryById(storage, item.id));
+  if (result.status !== 'removed') return notify('未能删除，记录仍然保留');
+  userEntries = result.entries.map(entry => ({ ...entry, source: 'user' }));
+  persisted = { mode: 'writable', entries: result.entries };
+  activeEntry = null;
+  go('climate');
+  notify('这条记录已删除');
+}
+
+function withEntryLock(action) {
+  if (globalThis.navigator?.locks?.request) return globalThis.navigator.locks.request(STORAGE_KEY, action);
+  return Promise.resolve(action());
+}
+
+async function clearPersonalData() {
   if (!window.confirm('确认清除这个浏览器中的所有个人记录吗？示例数据会保留。')) return;
-  sessionEntries = [];
   try {
     if (!storage) {
       if (userEntries.length) throw new Error('storage-unavailable');
+      sessionEntries = [];
       notify('当前页面中的未保存记录已清除');
       return render();
     }
-    storage.removeItem(STORAGE_KEY);
-    if (storage.getItem(STORAGE_KEY) !== null) throw new Error('not-cleared');
+    const cleared = await withEntryLock(() => {
+      storage.removeItem(STORAGE_KEY);
+      return storage.getItem(STORAGE_KEY) === null;
+    });
+    if (!cleared) throw new Error('not-cleared');
     userEntries = [];
+    sessionEntries = [];
     persisted = readEntries(storage);
     storageWritable = persisted.mode === 'writable';
     notify('个人记录已从这个浏览器清除');
     render();
   } catch {
-    notify('未保存记录已清除；浏览器中的已存记录未能清除');
+    notify('未能清除，现有记录仍然保留');
     render();
   }
 }
@@ -936,7 +1132,18 @@ document.addEventListener('click', event => {
   const target = event.target.closest('button, [data-go]');
   if (!target) return;
   if (target.dataset.go) return go(target.dataset.go);
-  if (target.hasAttribute('data-start')) { draft = freshDraft(); checkinStep = 1; return go('checkin'); }
+  if (target.hasAttribute('data-resume-diary') && resumableDiaryView) {
+    const resumeView = resumableDiaryView;
+    resumableDiaryView = null;
+    return go(resumeView);
+  }
+  if (target.dataset.tool) return startTool(target.dataset.tool);
+  if (target.dataset.entryId && target.dataset.entrySource) {
+    activeEntry = { source: target.dataset.entrySource, id: target.dataset.entryId };
+    return go('detail');
+  }
+  if (target.hasAttribute('data-delete-entry')) return deleteActiveEntry();
+  if (target.hasAttribute('data-start')) { draft = freshDraft(); resumableDiaryView = null; checkinStep = 1; return go('checkin'); }
   if (target.dataset.mood) { draft.mood = target.dataset.mood; return render(); }
   if (target.dataset.trigger) { draft.trigger = target.dataset.trigger; return render(); }
   if (target.hasAttribute('data-next')) { checkinStep = Math.min(3, checkinStep + 1); return render(); }
@@ -954,7 +1161,8 @@ document.addEventListener('click', event => {
   if (target.dataset.option) { draft[target.dataset.option] = target.dataset.option === 'minutes' ? Number(target.dataset.value) : target.dataset.value; return render(); }
   if (target.hasAttribute('data-recommend')) { draft.exercise = chooseExercise(draft); return go('exercise'); }
   if (target.hasAttribute('data-breathe-start')) return startBreathing();
-  if (target.hasAttribute('data-ex-complete') || target.hasAttribute('data-skip')) return finishExercise();
+  if (target.hasAttribute('data-ex-complete')) return finishExercise();
+  if (target.hasAttribute('data-skip')) return draft.exerciseOrigin === 'toolbox' ? go('tools') : finishExercise();
   if (target.hasAttribute('data-save')) return saveDraft();
   if (target.hasAttribute('data-clear')) return clearPersonalData();
   if (target.hasAttribute('data-export')) return exportPersonalData();
@@ -989,9 +1197,13 @@ document.addEventListener('change', event => {
   if (event.target.matches('[data-ex-step]')) {
     const boxes = [...document.querySelectorAll('[data-ex-step]')];
     const button = document.querySelector('[data-ex-complete]');
-    if (button) button.textContent = boxes.every(box => box.checked) ? '完成了，记录变化' : '这个动作已经足够小';
+    if (button) button.textContent = boxes.every(box => box.checked) ? (draft.exerciseOrigin === 'toolbox' ? '完成练习' : '完成了，记录变化') : (draft.exercise?.type === 'move' ? '身体松开一点了' : '这个动作已经足够小');
   }
 });
+
+function escapeHtml(value) {
+  return String(value ?? '').replace(/[&<>'"]/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[character]);
+}
 
 document.addEventListener('visibilitychange', () => {
   if (document.hidden) {
