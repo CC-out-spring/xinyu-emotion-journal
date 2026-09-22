@@ -296,6 +296,28 @@ textarea { width: 100%; min-height: 132px; resize: vertical; border: 1px solid v
 .source-label { padding: 5px 8px; border-radius: 999px; font-size: 10px; color: var(--muted); background: rgba(39,36,31,.05); }
 .source-label.mine { color: var(--purple-dark); background: rgba(111,99,169,.1); }
 
+.search-box {
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 15px;
+  border: 1px solid var(--line);
+  border-radius: 17px;
+  background: rgba(255,255,255,.68);
+}
+.search-box span { color: var(--muted); font-size: 20px; }
+.search-box input { width: 100%; min-width: 0; border: 0; outline: 0; color: var(--ink); background: transparent; }
+.filter-strip { display: flex; gap: 7px; margin: 11px 0 4px; padding-bottom: 5px; overflow-x: auto; scrollbar-width: none; }
+.filter-strip::-webkit-scrollbar { display: none; }
+.filter-strip button { flex: 0 0 auto; min-height: 38px; padding: 8px 13px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); background: rgba(255,255,255,.5); cursor: pointer; font-size: 12px; }
+.filter-strip button.selected { border-color: rgba(111,99,169,.35); color: var(--purple-dark); background: rgba(217,211,237,.58); font-weight: 700; }
+.empty-state { padding: 28px 20px; border: 1px dashed rgba(111,99,169,.24); border-radius: 24px; background: rgba(255,255,255,.36); text-align: center; }
+.empty-state > span { width: 48px; height: 48px; margin: 0 auto 10px; display: grid; place-items: center; border-radius: 16px; color: var(--purple-dark); background: rgba(217,211,237,.5); font-size: 22px; }
+.empty-state strong { display: block; }
+.empty-state p { margin: 5px 0 14px; color: var(--muted); font-size: 12px; }
+.empty-state.compact { margin-bottom: 4px; padding: 20px; }
+
 .back-button { margin: -8px 0 8px -8px; }
 .detail-head { display: flex; gap: 14px; align-items: center; margin-bottom: 20px; }
 .detail-head .eyebrow { margin-bottom: 4px; }
@@ -317,6 +339,20 @@ textarea { width: 100%; min-height: 132px; resize: vertical; border: 1px solid v
 .privacy-row:last-child { border-bottom: 0; }
 .privacy-row p { margin: 3px 0 0; font-size: 12px; color: var(--muted); }
 .status-pill { flex: 0 0 auto; padding: 6px 9px; border-radius: 999px; background: rgba(169,187,164,.2); color: #526852; font-size: 11px; font-weight: 700; }
+
+.stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; }
+.stats-grid article { padding: 17px 8px; border: 1px solid var(--line); border-radius: 20px; background: rgba(255,255,255,.62); text-align: center; box-shadow: var(--shadow); }
+.stats-grid strong { display: block; color: var(--purple-dark); font-size: 25px; }
+.stats-grid span { display: block; margin-top: 4px; color: var(--muted); font-size: 11px; }
+.profile-note { margin: 10px 4px 0; text-align: center; }
+.data-panel > div:first-child p { margin: 4px 0 0; color: var(--muted); font-size: 12px; }
+.data-panel .button-row { margin-top: 16px; }
+.settings-list { display: grid; gap: 9px; }
+.settings-list button { width: 100%; min-height: 66px; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; gap: 14px; border: 1px solid var(--line); border-radius: 20px; color: var(--ink); background: rgba(255,255,255,.62); text-align: left; cursor: pointer; box-shadow: var(--shadow); }
+.settings-list span, .settings-list strong, .settings-list small { display: block; }
+.settings-list small { margin-top: 4px; color: var(--muted); font-size: 11px; font-weight: 400; }
+.settings-list b { color: var(--purple-dark); }
+.visually-hidden { position: absolute !important; width: 1px !important; height: 1px !important; padding: 0 !important; margin: -1px !important; overflow: hidden !important; clip: rect(0,0,0,0) !important; white-space: nowrap !important; border: 0 !important; }
 
 .bottom-nav {
   position: fixed;
@@ -410,7 +446,7 @@ body:has(textarea:focus) .bottom-nav {
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V9M10 19V5M16 19v-7M22 19V3"/></svg>
         <span>气候</span>
       </button>
-      <button data-go="privacy" data-nav="privacy">
+      <button data-go="profile" data-nav="profile">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg>
         <span>我的</span>
       </button>
@@ -500,20 +536,28 @@ function chooseExercise({ trigger, minutes, place, energy }) {
 }
 
 function readEntries(storage) {
+  let raw;
   try {
-    const raw = storage?.getItem(STORAGE_KEY);
-    if (raw === null) return { mode: 'writable', entries: [] };
+    if (!storage) return { mode: 'readonly', entries: [] };
+    raw = storage.getItem(STORAGE_KEY);
+  } catch {
+    return { mode: 'readonly', entries: [] };
+  }
+  if (raw === null) return { mode: 'writable', entries: [] };
+  try {
     const parsed = JSON.parse(raw);
     if (!Array.isArray(parsed)) throw new Error('not-array');
     return { mode: 'writable', entries: parsed.map(normalizeEntry).filter(Boolean) };
   } catch {
-    return { mode: 'readonly', entries: [] };
+    return { mode: 'corrupt', entries: [] };
   }
 }
 
 const allowedMoods = new Set(['开心', '平静', '疲惫', '焦虑', '低落', '生气']);
 const allowedTriggers = new Set(['学业', '工作', '人际', '家庭', '感情', '身体', '经济', '不知道']);
 const allowedCare = new Set(['breathe', 'ground', 'plan', 'skipped']);
+const IMPORT_LIMIT = 1000;
+const IMPORT_BYTES_LIMIT = 1024 * 1024;
 
 function normalizeEntry(item) {
   if (!item || typeof item !== 'object') return null;
@@ -558,6 +602,151 @@ function normalizeTextList(value) {
   return value.filter(item => typeof item === 'string').slice(0, 6).map(item => item.slice(0, 60));
 }
 
+function isReservedSample(item) {
+  return item?.source === 'sample' || (typeof item?.id === 'string' && item.id.startsWith('sample-'));
+}
+
+function sortNewestFirst(entries) {
+  return [...entries].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+}
+
+function createExportPayload(entries = [], now = new Date()) {
+  const safeEntries = entries
+    .filter(item => item?.source === 'user' && !isReservedSample(item))
+    .map(normalizeEntry)
+    .filter(Boolean);
+  return {
+    product: 'xinyu',
+    version: 2,
+    exportedAt: new Date(now).toISOString(),
+    entries: sortNewestFirst(safeEntries)
+  };
+}
+
+function parseImportPayload(text) {
+  if (typeof text !== 'string' || new Blob([text]).size > IMPORT_BYTES_LIMIT) {
+    return { status: 'too-large', entries: [], skipped: 0, rejected: 0 };
+  }
+  let parsed;
+  try {
+    parsed = JSON.parse(text);
+  } catch {
+    return { status: 'invalid-json', entries: [], skipped: 0, rejected: 0 };
+  }
+  let candidates;
+  if (Array.isArray(parsed)) {
+    candidates = parsed;
+  } else if (parsed && typeof parsed === 'object') {
+    if (parsed.product !== 'xinyu' || parsed.version !== 2) {
+      return { status: 'unsupported', entries: [], skipped: 0, rejected: 0 };
+    }
+    if (!Array.isArray(parsed.entries)) {
+      return { status: 'invalid-format', entries: [], skipped: 0, rejected: 0 };
+    }
+    candidates = parsed.entries;
+  } else {
+    return { status: 'invalid-format', entries: [], skipped: 0, rejected: 0 };
+  }
+  if (candidates.length > IMPORT_LIMIT) {
+    return { status: 'too-many', entries: [], skipped: 0, rejected: 0 };
+  }
+  const ids = new Set();
+  const entries = [];
+  let skipped = 0;
+  let rejected = 0;
+  for (const candidate of candidates) {
+    if (isReservedSample(candidate)) {
+      rejected += 1;
+      continue;
+    }
+    const safe = normalizeEntry(candidate);
+    if (!safe) {
+      rejected += 1;
+      continue;
+    }
+    if (ids.has(safe.id)) {
+      skipped += 1;
+      continue;
+    }
+    ids.add(safe.id);
+    entries.push(safe);
+  }
+  return { status: entries.length ? 'ready' : 'empty', entries: sortNewestFirst(entries), skipped, rejected };
+}
+
+function importEntries(storage, text, { allowReplaceCorrupt = false } = {}) {
+  const parsed = parseImportPayload(text);
+  if (parsed.status !== 'ready') return { ...parsed, added: 0 };
+  const current = readEntries(storage);
+  if (current.mode === 'readonly') return { status: 'readonly', entries: current.entries, added: 0, skipped: parsed.skipped, rejected: parsed.rejected };
+  if (current.mode === 'corrupt' && !allowReplaceCorrupt) {
+    return { status: 'corrupt-requires-confirmation', entries: [], added: 0, skipped: parsed.skipped, rejected: parsed.rejected };
+  }
+  const existingIds = new Set(current.entries.map(item => item.id));
+  const additions = parsed.entries.filter(item => {
+    if (existingIds.has(item.id)) {
+      parsed.skipped += 1;
+      return false;
+    }
+    existingIds.add(item.id);
+    return true;
+  });
+  if (!additions.length) {
+    return { status: 'duplicate', entries: current.entries, added: 0, skipped: parsed.skipped, rejected: parsed.rejected };
+  }
+  const merged = sortNewestFirst([...current.entries, ...additions]);
+  try {
+    storage.setItem(STORAGE_KEY, JSON.stringify(merged));
+  } catch {
+    return { status: 'failed', entries: readEntries(storage).entries, added: 0, skipped: parsed.skipped, rejected: parsed.rejected };
+  }
+  const verified = readEntries(storage);
+  const verifiedIds = new Set(verified.entries.map(item => item.id));
+  const isValid = verified.mode === 'writable'
+    && verified.entries.length === merged.length
+    && verifiedIds.size === merged.length
+    && merged.every(item => verifiedIds.has(item.id));
+  if (!isValid) return { status: 'failed', entries: verified.entries, added: 0, skipped: parsed.skipped, rejected: parsed.rejected };
+  return { status: 'imported', entries: verified.entries, added: additions.length, skipped: parsed.skipped, rejected: parsed.rejected };
+}
+
+function filterEntries(entries = [], { mood = '全部', query = '' } = {}) {
+  const needle = String(query).trim().toLocaleLowerCase();
+  return sortNewestFirst(entries.filter(item => {
+    if (item?.source !== 'user' && item?.source !== 'session') return false;
+    if (mood !== '全部' && item.mood !== mood) return false;
+    if (!needle) return true;
+    return [item.note, item.mood, item.trigger].some(value => String(value || '').toLocaleLowerCase().includes(needle));
+  }));
+}
+
+function localDay(date) {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+}
+
+function localDayKey(date) {
+  return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+}
+
+function computeUsageStats(entries = [], now = new Date()) {
+  const current = new Date(now);
+  const personal = entries.filter(item => item?.source === 'user' && Number.isFinite(Date.parse(item.createdAt)));
+  const eligible = personal.map(item => new Date(item.createdAt)).filter(date => date <= current);
+  const today = localDay(current);
+  const monday = new Date(today);
+  monday.setDate(today.getDate() - ((today.getDay() + 6) % 7));
+  const thisWeek = eligible.filter(date => date >= monday).length;
+  const dayKeys = new Set(eligible.map(localDayKey));
+  const cursor = new Date(today);
+  if (!dayKeys.has(localDayKey(cursor))) cursor.setDate(cursor.getDate() - 1);
+  let streak = 0;
+  while (dayKeys.has(localDayKey(cursor))) {
+    streak += 1;
+    cursor.setDate(cursor.getDate() - 1);
+  }
+  return { total: personal.length, thisWeek, streak };
+}
+
 function saveEntryIdempotently(storage, entry) {
   const safeEntry = normalizeEntry(entry);
   if (!safeEntry) return { status: 'invalid', entries: [] };
@@ -587,6 +776,17 @@ function removeEntryById(storage, id) {
     return { status: 'removed', entries: verified.entries };
   } catch {
     return { status: 'failed', entries: current.entries };
+  }
+}
+
+function clearEntriesIfUnchanged(storage, expectedRaw) {
+  try {
+    if (!storage) return { status: 'readonly' };
+    if (storage.getItem(STORAGE_KEY) !== expectedRaw) return { status: 'changed' };
+    storage.removeItem(STORAGE_KEY);
+    return storage.getItem(STORAGE_KEY) === null ? { status: 'cleared' } : { status: 'failed' };
+  } catch {
+    return { status: 'failed' };
   }
 }
 
@@ -647,6 +847,7 @@ const sampleEntries = [
 ];
 
 const storage = getSafeStorage(window);
+const storageLockReady = Boolean(globalThis.navigator?.locks?.request);
 let persisted = readEntries(storage);
 let storageWritable = persisted.mode === 'writable';
 let userEntries = persisted.entries.map(item => ({ ...item, source: 'user' }));
@@ -658,6 +859,9 @@ let exerciseDeadline = null;
 let analysisTimer = null;
 let toastTimer = null;
 let activeEntry = null;
+let detailReturnView = 'climate';
+let historyMood = '全部';
+let historyQuery = '';
 let suspendedDiaryDraft = null;
 let resumableDiaryView = null;
 let draft = freshDraft();
@@ -684,6 +888,10 @@ function allEntries() {
   return [...userEntries, ...sessionEntries, ...sampleEntries].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 }
 
+function canPersist() {
+  return storageLockReady && storageWritable;
+}
+
 function clearExerciseTimer() {
   if (exerciseInterval) clearInterval(exerciseInterval);
   exerciseInterval = null;
@@ -696,7 +904,7 @@ function pauseExerciseTimer() {
 }
 
 function go(next) {
-  const allowed = ['home', 'checkin', 'loading', 'insight', 'care', 'exercise', 'result', 'tools', 'climate', 'detail', 'privacy', 'safety'];
+  const allowed = ['home', 'checkin', 'loading', 'insight', 'care', 'exercise', 'result', 'tools', 'climate', 'history', 'detail', 'profile', 'privacy', 'safety'];
   if (!allowed.includes(next)) next = 'home';
   const diaryViews = ['checkin', 'loading', 'insight', 'care', 'exercise', 'result', 'safety'];
   if (next === 'tools' && diaryViews.includes(view) && draft.exerciseOrigin === 'diary' && !draft.saved) {
@@ -725,7 +933,7 @@ function notify(message) {
 
 function render() {
   document.querySelectorAll('[data-nav]').forEach(button => {
-    const navView = view === 'detail' ? 'climate' : view === 'exercise' && draft.exerciseOrigin === 'toolbox' ? 'tools' : view;
+    const navView = view === 'detail' ? (detailReturnView === 'history' ? 'climate' : detailReturnView) : view === 'history' ? 'climate' : view === 'privacy' || view === 'safety' ? 'profile' : view === 'exercise' && draft.exerciseOrigin === 'toolbox' ? 'tools' : view;
     button.classList.toggle('active', button.dataset.nav === navView || (view === 'checkin' && button.dataset.nav === 'home'));
   });
   const screens = {
@@ -738,7 +946,9 @@ function render() {
     result: renderResult,
     tools: renderTools,
     climate: renderClimate,
+    history: renderHistoryCenter,
     detail: renderDetail,
+    profile: renderProfile,
     privacy: renderPrivacy,
     safety: renderSafety
   };
@@ -782,7 +992,7 @@ function renderHome() {
           <p>${weather[1]}</p>
         </div>
         <div class="weather-footer">
-          <span class="weather-mini">${latest?.source === 'session' ? '仅当前页面可见' : '约 3 分钟 · 仅保存在本机'}</span>
+          <span class="weather-mini">${latest?.source === 'session' || !canPersist() ? '当前浏览器 · 仅本次页面可见' : '约 3 分钟 · 仅保存在本机'}</span>
           <button class="primary light" data-start>记录此刻</button>
         </div>
       </article>
@@ -891,7 +1101,7 @@ function renderResult() {
   const message = delta > 0 ? `轻了 ${delta} 格` : delta === 0 ? '没有变化也没关系' : '情绪变强了，也值得被看见';
   return `<section class="screen center"><p class="eyebrow">完成一次照顾</p><div class="result-orb"><strong id="result-delta">${delta > 0 ? `−${delta}` : delta === 0 ? '≈' : `+${Math.abs(delta)}`}</strong></div><h2 id="result-title">${message}</h2><p class="muted">调节不是消灭情绪，而是多一点选择。</p>
     <div class="panel" style="text-align:left;margin-top:24px"><div class="range-value"><strong id="after-value">${draft.after}</strong><span class="muted">/ 10 现在的强度</span></div><input id="after" type="range" min="1" max="10" value="${draft.after}" aria-label="调节后的情绪强度"><div class="range-labels"><span>轻微</span><span>强烈</span></div></div>
-    <button class="primary full" style="margin-top:18px" data-save ${draft.saved ? 'disabled' : ''}>${draft.saved ? '已经保存' : '保存，并看看我的气候'}</button></section>`;
+    <button class="primary full" style="margin-top:18px" data-save ${draft.saved ? 'disabled' : ''}>${draft.saved ? '已经记录' : canPersist() ? '保存，并看看我的气候' : '保留本次记录，并看看气候'}</button></section>`;
 }
 
 function renderClimate() {
@@ -916,8 +1126,8 @@ function renderClimate() {
     </article>
     <div class="section-head"><h3>${isExample ? '示例如何形成观察' : summary.patternReady ? '正在浮现的线索' : '正在积累线索'}</h3></div>
     <div class="mini-grid"><article class="mini-card"><span>${firstSignalLabel}</span><strong>${firstSignalValue}</strong></article><article class="mini-card"><span>${careSignalLabel}</span><strong>${careSignalValue}</strong></article></div>
-    <div class="section-head"><h3>记录</h3><span class="small muted">${summary.personalCount} 条我的记录${hasSessionData ? ` · ${sessionEntries.length} 条未保存` : ''}</span></div>
-    <div class="history-list">${allEntries().slice(0, 6).map(renderHistory).join('')}</div>
+    <div class="section-head"><h3>最近记录</h3>${hasRecordedData ? '<button class="text-button" data-go="history">查看全部</button>' : '<span class="small muted">体验示例</span>'}</div>
+    <div class="history-list">${(hasRecordedData ? [...recordedEntries].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) : sampleEntries).slice(0, 4).map(renderHistoryCard).join('')}</div>
     ${!hasRecordedData ? '<div class="disclaimer">目前展示的是体验用示例气候。完成一次记录后，你的数据会以“我的”标识出现。</div>' : hasSessionData ? '<div class="disclaimer">带“未保存”标识的记录只在当前页面有效，刷新或关闭页面后会消失。</div>' : ''}
   </section>`;
 }
@@ -933,25 +1143,58 @@ function chartPoints(entries) {
   return { line, area, circles, labels };
 }
 
-function renderHistory(item) {
+function renderHistoryCard(item) {
   const date = new Date(item.createdAt);
   const sourceText = item.source === 'user' ? '我的' : item.source === 'session' ? '未保存' : '示例';
   return `<button class="history-card" data-entry-source="${escapeHtml(item.source)}" data-entry-id="${escapeHtml(item.id)}"><span class="history-weather">${moodEmoji[item.mood] || '◌'}</span><span class="history-copy"><strong>${escapeHtml(item.mood)} · ${escapeHtml(item.trigger)}</strong><small>${date.getMonth() + 1}月${date.getDate()}日 · ${item.before} → ${item.after ?? item.before}</small></span><span class="source-label ${item.source !== 'sample' ? 'mine' : ''}">${sourceText}</span></button>`;
 }
 
+function renderHistoryCenter() {
+  const results = filterEntries([...userEntries, ...sessionEntries], { mood: historyMood, query: historyQuery });
+  return `<section class="screen"><button class="text-button back-button" data-go="climate">← 返回气候</button>
+    <p class="eyebrow">MY JOURNAL</p><h1>全部记录</h1><p class="prompt">按情绪或关键词，找回某一段内心天气。</p>
+    <label class="search-box"><span aria-hidden="true">⌕</span><input id="history-search" type="search" maxlength="80" value="${escapeHtml(historyQuery)}" placeholder="搜索文字、情绪或触发因素" autocomplete="off"></label>
+    <div class="filter-strip" role="group" aria-label="按情绪筛选">${['全部', ...moods.map(([name]) => name)].map(name => `<button class="${historyMood === name ? 'selected' : ''}" data-history-mood="${name}" aria-pressed="${historyMood === name}">${name}</button>`).join('')}</div>
+    <div id="history-results">${renderHistoryResults(results)}</div>
+  </section>`;
+}
+
+function renderHistoryResults(results = filterEntries([...userEntries, ...sessionEntries], { mood: historyMood, query: historyQuery })) {
+  const count = results.length;
+  const heading = historyQuery.trim() || historyMood !== '全部' ? '筛选结果' : '时间线';
+  return `<div class="section-head"><h3>${heading}</h3><span class="small muted">${count} 条</span></div>
+    ${count ? `<div class="history-list">${results.map(renderHistoryCard).join('')}</div>` : `<article class="empty-state"><span>◌</span><strong>没有找到相符的记录</strong><p>换个关键词或情绪试试看。</p><button class="soft-button" data-reset-history>清除筛选</button></article>`}`;
+}
+
 function renderDetail() {
   const item = activeEntry && findEntry(activeEntry.source, activeEntry.id);
-  if (!item) return `<section class="screen"><h2>这条记录已经不在了</h2><p class="prompt">它可能已被清除或只存在于之前的页面会话中。</p><button class="primary full" data-go="climate">返回气候</button></section>`;
+  const returnLabel = detailReturnView === 'history' ? '全部记录' : '气候';
+  if (!item) return `<section class="screen"><h2>这条记录已经不在了</h2><p class="prompt">它可能已被清除或只存在于之前的页面会话中。</p><button class="primary full" data-go="${detailReturnView}">返回${returnLabel}</button></section>`;
   const date = new Date(item.createdAt);
   const sourceText = item.source === 'user' ? '已保存在本机' : item.source === 'session' ? '仅当前页面可见' : '体验示例';
   const insight = item.insight;
-  return `<section class="screen detail-screen"><button class="text-button back-button" data-go="climate">← 返回气候</button>
+  return `<section class="screen detail-screen"><button class="text-button back-button" data-go="${detailReturnView}">← 返回${returnLabel}</button>
     <div class="detail-head"><span class="detail-weather">${moodEmoji[item.mood] || '◌'}</span><div><p class="eyebrow">${escapeHtml(sourceText)}</p><h2>${escapeHtml(item.mood)} · ${escapeHtml(item.trigger)}</h2><p class="small muted">${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日 · ${item.before} → ${item.after ?? item.before}</p></div></div>
     <article class="panel detail-block"><span class="detail-label">当时发生了什么</span><p>${item.note ? escapeHtml(item.note) : '这次没有留下文字。'}</p></article>
     <div class="section-head"><h3>情绪镜子</h3></div>
     ${insight ? `<div class="insight-stack compact">${insightCard('◌', '发生的事', insight.event)}${insightCard('↗', '脑海里的声音', insight.thought)}${insightTags('≈', '可能的情绪', insight.emotions)}${insightTags('♡', '当时的需要', insight.needs)}</div>` : '<div class="disclaimer">旧记录没有保存情绪镜子，但情绪、触发和强度仍然完整保留。</div>'}
     <article class="panel detail-block"><span class="detail-label">尝试的照顾</span><p>${escapeHtml(careNames[item.careType] || '暂时跳过')}</p></article>
     ${item.source === 'sample' ? '' : '<button class="danger-button full" data-delete-entry>删除这条记录</button>'}
+  </section>`;
+}
+
+function renderProfile() {
+  const stats = computeUsageStats(userEntries);
+  const lockReady = storageLockReady;
+  const importDisabled = persisted.mode === 'readonly' || !lockReady;
+  return `<section class="screen"><p class="eyebrow">MY XINYU</p><h1>我的心屿</h1><p class="prompt">你的记录节奏和数据，都由你自己掌握。</p>
+    <div class="stats-grid"><article><strong>${stats.total}</strong><span>已保存记录</span></article><article><strong>${stats.thisWeek}</strong><span>本周记录</span></article><article><strong>${stats.streak}</strong><span>连续天数</span></article></div>
+    ${stats.total ? '<p class="small muted profile-note">持续不是每天都必须完成，而是愿意一次次回来看看自己。</p>' : '<article class="empty-state compact"><span>◌</span><strong>岛上还没有你的足迹</strong><p>完成第一次记录后，这里会出现你的使用节奏。</p><button class="soft-button" data-start>记录此刻</button></article>'}
+    <div class="section-head"><h3>备份与恢复</h3><span class="small muted">仅在本机处理</span></div>
+    <article class="panel data-panel"><div><strong>带走你的记录</strong><p>导出 JSON 备份，换浏览器时可以再恢复。</p></div><div class="button-row"><button class="soft-button" data-export>导出备份</button><button class="secondary" data-import ${importDisabled ? 'disabled' : ''}>恢复备份</button></div><input id="import-file" class="visually-hidden" type="file" accept="application/json,.json"></article>
+    ${!lockReady ? '<div class="disclaimer">当前浏览器缺少安全锁能力，已停用批量恢复与全量清除，避免多标签页互相覆盖。</div>' : persisted.mode === 'readonly' ? '<div class="disclaimer">浏览器存储处于只读保护，恢复功能暂不可用。</div>' : persisted.mode === 'corrupt' ? '<div class="disclaimer">检测到无法读取的旧数据。你可以选择恢复备份，确认后会替换损坏内容；文件不会上传。</div>' : '<div class="disclaimer">恢复只会合并新记录，不会覆盖或删除本机已有内容；文件不会上传。</div>'}
+    <div class="section-head"><h3>设置与支持</h3></div>
+    <div class="settings-list"><button data-go="privacy"><span><strong>隐私与数据说明</strong><small>本地保存、示例标识与清除数据</small></span><b>→</b></button><button data-go="safety"><span><strong>安全支持</strong><small>情绪危机时联系真实的人</small></span><b>→</b></button></div>
   </section>`;
 }
 
@@ -962,9 +1205,10 @@ function findEntry(source, id) {
 
 function renderPrivacy() {
   const writable = storageWritable;
+  const lockReady = storageLockReady;
   return `<section class="screen"><p class="eyebrow">PRIVACY BY DEFAULT</p><h1>你的岛，属于你</h1><p class="prompt">记录只留在这个浏览器中。没有账号，没有上传，也没有广告追踪。</p>
-    <article class="panel"><div class="privacy-row"><div><strong>本地保存</strong><p>刷新后仍可看到，换设备不会同步</p></div><span class="status-pill">${writable ? '已开启' : '只读保护'}</span></div><div class="privacy-row"><div><strong>网络传输</strong><p>情绪文字不会发送到服务器</p></div><span class="status-pill">无</span></div><div class="privacy-row"><div><strong>示例数据</strong><p>始终标注“示例”，不混作你的记录</p></div><span class="status-pill">5 条</span></div></article>
-    <div class="section-head"><h3>管理数据</h3></div><div class="button-row"><button class="soft-button" data-export>导出我的记录</button><button class="danger-button" data-clear>清除我的记录</button></div>
+    <article class="panel"><div class="privacy-row"><div><strong>本地保存</strong><p>${canPersist() ? '刷新后仍可看到，换设备不会同步' : persisted.mode === 'corrupt' ? '旧数据无法读取，可通过恢复或清除修复' : '当前浏览器仅保留本次页面记录'}</p></div><span class="status-pill">${persisted.mode === 'corrupt' ? '待修复' : !writable ? '只读保护' : lockReady ? '已开启' : '仅本次'}</span></div><div class="privacy-row"><div><strong>网络传输</strong><p>情绪文字不会发送到服务器</p></div><span class="status-pill">无</span></div><div class="privacy-row"><div><strong>示例数据</strong><p>始终标注“示例”，不混作你的记录</p></div><span class="status-pill">5 条</span></div></article>
+    <div class="section-head"><h3>管理数据</h3></div><div class="button-row"><button class="soft-button" data-go="profile">备份与恢复</button><button class="danger-button" data-clear ${persisted.mode === 'readonly' || !lockReady ? 'disabled' : ''}>${persisted.mode === 'corrupt' ? '清除损坏数据' : '清除我的记录'}</button></div>
     <div class="section-head"><h3>安全支持</h3></div><article class="panel"><p style="margin-top:0">如果情绪已经超出独自承受的范围，可以联系可信任的人或专业支持。</p><button class="secondary full" data-go="safety">查看援助方式</button></article>
     <div class="disclaimer">心屿不是医疗产品，不提供心理诊断、治疗建议或紧急救援。</div></section>`;
 }
@@ -1029,13 +1273,22 @@ async function saveDraft() {
     note: draft.note,
     insight: draft.insight
   };
-  const result = await withEntryLock(() => saveEntryIdempotently(storage, entry));
+  if (!canPersist()) {
+    draft.saved = true;
+    resumableDiaryView = null;
+    if (!sessionEntries.some(item => item.id === entry.id)) sessionEntries.unshift({ ...entry, source: 'session' });
+    go('climate');
+    notify(storageLockReady ? '浏览器存储不可用；记录仅在本次页面保留' : '当前浏览器缺少安全锁；记录仅在本次页面保留');
+    return;
+  }
+  const result = await withStorageLock(() => saveEntryIdempotently(storage, entry));
   if (result.status === 'invalid') {
     notify('记录内容不完整，请返回检查后重试');
     return;
   }
   if (result.status === 'failed' || result.status === 'readonly') {
-    storageWritable = false;
+    persisted = readEntries(storage);
+    storageWritable = persisted.mode === 'writable';
     draft.saved = true;
     resumableDiaryView = null;
     if (!sessionEntries.some(item => item.id === entry.id)) sessionEntries.unshift({ ...entry, source: 'session' });
@@ -1072,39 +1325,39 @@ async function deleteActiveEntry() {
   if (item.source === 'session') {
     sessionEntries = sessionEntries.filter(entry => entry.id !== item.id);
     activeEntry = null;
-    go('climate');
+    go(detailReturnView);
     notify('未保存记录已删除');
     return;
   }
+  if (!storageLockReady) return notify('当前浏览器不支持安全删除，请先导出备份');
   if (!window.confirm('确认删除这条情绪日记吗？删除后无法恢复。')) return;
-  const result = await withEntryLock(() => removeEntryById(storage, item.id));
+  const result = await withStorageLock(() => removeEntryById(storage, item.id));
   if (result.status !== 'removed') return notify('未能删除，记录仍然保留');
   userEntries = result.entries.map(entry => ({ ...entry, source: 'user' }));
   persisted = { mode: 'writable', entries: result.entries };
   activeEntry = null;
-  go('climate');
+  go(detailReturnView);
   notify('这条记录已删除');
 }
 
-function withEntryLock(action) {
-  if (globalThis.navigator?.locks?.request) return globalThis.navigator.locks.request(STORAGE_KEY, action);
+function withStorageLock(action) {
+  if (storageLockReady) return globalThis.navigator.locks.request(STORAGE_KEY, action);
   return Promise.resolve(action());
 }
 
 async function clearPersonalData() {
+  if (!storageLockReady) return notify('当前浏览器不支持安全清除，请先导出备份');
+  let snapshot;
+  try {
+    snapshot = storage.getItem(STORAGE_KEY);
+  } catch {
+    return notify('无法读取当前数据，未执行清除');
+  }
   if (!window.confirm('确认清除这个浏览器中的所有个人记录吗？示例数据会保留。')) return;
   try {
-    if (!storage) {
-      if (userEntries.length) throw new Error('storage-unavailable');
-      sessionEntries = [];
-      notify('当前页面中的未保存记录已清除');
-      return render();
-    }
-    const cleared = await withEntryLock(() => {
-      storage.removeItem(STORAGE_KEY);
-      return storage.getItem(STORAGE_KEY) === null;
-    });
-    if (!cleared) throw new Error('not-cleared');
+    const result = await withStorageLock(() => clearEntriesIfUnchanged(storage, snapshot));
+    if (result.status === 'changed') return notify('确认期间记录发生了变化，为避免误删已取消清除');
+    if (result.status !== 'cleared') throw new Error('not-cleared');
     userEntries = [];
     sessionEntries = [];
     persisted = readEntries(storage);
@@ -1117,15 +1370,58 @@ async function clearPersonalData() {
   }
 }
 
-function exportPersonalData() {
-  if (!userEntries.length) return notify('还没有可以导出的个人记录');
-  const blob = new Blob([JSON.stringify(userEntries, null, 2)], { type: 'application/json' });
+async function exportPersonalData() {
+  const latest = await withStorageLock(() => readEntries(storage));
+  if (latest.mode !== 'writable') return notify('暂时无法读取已保存记录');
+  const payload = createExportPayload(latest.entries.map(item => ({ ...item, source: 'user' })), new Date());
+  if (!payload.entries.length) return notify('还没有可以导出的个人记录');
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.href = url;
   link.download = `心屿记录-${new Date().toISOString().slice(0, 10)}.json`;
+  document.body.append(link);
   link.click();
+  link.remove();
   setTimeout(() => URL.revokeObjectURL(url), 500);
+}
+
+async function restorePersonalData(file) {
+  if (!file) return;
+  if (!storageLockReady) return notify('当前浏览器不支持安全恢复');
+  if (file.size > 1024 * 1024) return notify('备份文件超过 1 MB，未读取');
+  let text;
+  try {
+    text = await file.text();
+  } catch {
+    return notify('无法读取这个文件');
+  }
+  let result = await withStorageLock(() => importEntries(storage, text));
+  if (result.status === 'corrupt-requires-confirmation') {
+    if (!window.confirm('检测到旧数据已损坏。继续恢复会用备份替换损坏内容，是否继续？')) return;
+    result = await withStorageLock(() => importEntries(storage, text, { allowReplaceCorrupt: true }));
+  }
+  if (result.status === 'imported') {
+    reconcileStoredEntries({ mode: 'writable', entries: result.entries });
+    return notify(`已恢复 ${result.added} 条记录${result.skipped ? `，跳过 ${result.skipped} 条重复` : ''}`);
+  }
+  if (result.status === 'duplicate') {
+    reconcileStoredEntries({ mode: 'writable', entries: result.entries });
+    return notify('这些记录已在心屿中，没有重复导入');
+  }
+  if (result.status === 'empty') return notify('文件中没有可恢复的有效记录');
+  if (result.status === 'too-large' || result.status === 'too-many') return notify('备份内容过大，未导入');
+  if (result.status === 'invalid-json' || result.status === 'invalid-format') return notify('这不是有效的心屿备份文件');
+  if (result.status === 'unsupported') return notify('备份版本或来源不受支持');
+  reconcileStoredEntries(readEntries(storage));
+  notify(result.status === 'readonly' ? '浏览器存储处于只读保护' : '恢复未完成，现有记录仍以浏览器实际内容为准');
+}
+
+function reconcileStoredEntries(snapshot) {
+  userEntries = snapshot.entries.map(item => ({ ...item, source: 'user' }));
+  persisted = snapshot;
+  storageWritable = snapshot.mode === 'writable';
+  render();
 }
 
 document.addEventListener('click', event => {
@@ -1137,8 +1433,12 @@ document.addEventListener('click', event => {
     resumableDiaryView = null;
     return go(resumeView);
   }
+  if (target.dataset.historyMood) { historyMood = target.dataset.historyMood; return render(); }
+  if (target.hasAttribute('data-reset-history')) { historyMood = '全部'; historyQuery = ''; return render(); }
+  if (target.hasAttribute('data-import')) return document.querySelector('#import-file')?.click();
   if (target.dataset.tool) return startTool(target.dataset.tool);
   if (target.dataset.entryId && target.dataset.entrySource) {
+    detailReturnView = view === 'history' ? 'history' : 'climate';
     activeEntry = { source: target.dataset.entrySource, id: target.dataset.entryId };
     return go('detail');
   }
@@ -1171,6 +1471,11 @@ document.addEventListener('click', event => {
 });
 
 document.addEventListener('input', event => {
+  if (event.target.id === 'history-search') {
+    historyQuery = event.target.value;
+    const results = document.querySelector('#history-results');
+    if (results) results.innerHTML = renderHistoryResults();
+  }
   if (event.target.id === 'intensity') {
     draft.intensity = Number(event.target.value);
     const output = document.querySelector('#intensity-display');
@@ -1194,6 +1499,11 @@ function updateResultFeedback() {
 }
 
 document.addEventListener('change', event => {
+  if (event.target.id === 'import-file') {
+    const [file] = event.target.files || [];
+    restorePersonalData(file).finally(() => { event.target.value = ''; });
+    return;
+  }
   if (event.target.matches('[data-ex-step]')) {
     const boxes = [...document.querySelectorAll('[data-ex-step]')];
     const button = document.querySelector('[data-ex-complete]');
@@ -1219,7 +1529,8 @@ document.addEventListener('visibilitychange', () => {
   }
 });
 
-if (persisted.mode === 'readonly') setTimeout(() => notify('检测到无法读取的旧数据，已进入只读保护模式'), 500);
+if (persisted.mode === 'readonly') setTimeout(() => notify('浏览器存储不可用，记录将只在本次页面保留'), 500);
+if (persisted.mode === 'corrupt') setTimeout(() => notify('检测到损坏的旧数据，可在“我的”中恢复或清除'), 500);
 render();
 
 </script>
